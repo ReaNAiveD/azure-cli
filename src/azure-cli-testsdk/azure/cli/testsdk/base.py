@@ -135,6 +135,9 @@ class ScenarioTest(ReplayableTest, CheckerMixin, unittest.TestCase):
         )
 
     def tearDown(self):
+        project_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../../..")
+        with open(os.path.join(project_path, "TestResults/scenarios.txt"), "a+", encoding="utf-8") as f:
+            f.write(f"Test Finished --------- {self._testMethodName}\n\n")
         for processor in self._processors_to_reset:
             processor.reset()
         super(ScenarioTest, self).tearDown()
@@ -167,6 +170,9 @@ class ScenarioTest(ReplayableTest, CheckerMixin, unittest.TestCase):
 
     def cmd(self, command, checks=None, expect_failure=False):
         command = self._apply_kwargs(command)
+        project_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../../..")
+        with open(os.path.join(project_path, "TestResults/scenarios.txt"), "a+", encoding="utf-8") as f:
+            f.write(f"{command}\n")
         return execute(self.cli_ctx, command, expect_failure=expect_failure).assert_with_checks(checks)
 
     def get_subscription_id(self):
