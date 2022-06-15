@@ -3,11 +3,13 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
+from concurrent.futures import thread
 import os
 import json
 import shlex
 import logging
 import inspect
+import threading
 import unittest
 import tempfile
 
@@ -122,6 +124,9 @@ class ScenarioTest(ReplayableTest, CheckerMixin, unittest.TestCase):
             if patches:
                 merged = list(set(merged).union(set(patches)))
             return merged
+        
+        self.scenario_history = {}
+        self.scenario_lock = threading.Lock()
 
         super(ScenarioTest, self).__init__(
             method_name,
@@ -136,8 +141,13 @@ class ScenarioTest(ReplayableTest, CheckerMixin, unittest.TestCase):
 
     def tearDown(self):
         project_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../../..")
-        with open(os.path.join(project_path, "TestResults/scenarios.txt"), "a+", encoding="utf-8") as f:
-            f.write(f"Test Finished --------- {self._testMethodName}\n\n")
+        key = self.__class__.__name__ + "|" + self._testMethodName
+        with self.scenario_lock:
+            with open(os.path.join(project_path, "TestResults/scenarios.txt"), "a+", encoding="utf-8") as f:
+                for cmd in self.scenario_history.get(key, []):
+                    f.write(f">--<{cmd}\n")
+                f.write(f"Test Finished --------- {self._testMethodName}\n\n")
+                self.scenario_history.pop(key, [])
         for processor in self._processors_to_reset:
             processor.reset()
         super(ScenarioTest, self).tearDown()
@@ -170,9 +180,8 @@ class ScenarioTest(ReplayableTest, CheckerMixin, unittest.TestCase):
 
     def cmd(self, command, checks=None, expect_failure=False):
         command = self._apply_kwargs(command)
-        project_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../../..")
-        with open(os.path.join(project_path, "TestResults/scenarios.txt"), "a+", encoding="utf-8") as f:
-            f.write(f"{command}\n")
+        key = self.__class__.__name__ + "|" + self._testMethodName
+        self.scenario_history[key] = self.scenario_history.get(key, []) + [command]
         return execute(self.cli_ctx, command, expect_failure=expect_failure).assert_with_checks(checks)
 
     def get_subscription_id(self):
