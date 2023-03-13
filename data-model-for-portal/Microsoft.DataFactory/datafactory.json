@@ -1,0 +1,125 @@
+{
+    "resourceType": "datafactory",
+    "apiVersion": "2018-06-01",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/datafactory"
+    },
+    "commands": [
+        {
+            "name": "az datafactory list",
+            "description": "Lists factories. And Lists factories under the specified subscription.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/datafactory#az-datafactory-list"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "List all the data factories under a certain resource group.",
+                    "parameters": [
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az datafactory show",
+            "description": "Gets a factory.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/datafactory#az-datafactory-show"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--name]",
+                            "[--ids]",
+                            "[--if-none-match]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Get detailed information of a data factory.",
+                    "parameters": [
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.factoryName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az datafactory delete",
+            "description": "Deletes a factory.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.DataFactory/factories/{factoryName}",
+            "confirmation": true,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/datafactory#az-datafactory-delete"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--name]",
+                            "[--ids]",
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--yes]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Delete an existing data factory.",
+                    "parameters": [
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.factoryName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
