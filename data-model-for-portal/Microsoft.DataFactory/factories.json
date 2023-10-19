@@ -1,5 +1,5 @@
 {
-    "resourceType": "datafactory",
+    "resourceType": "factories",
     "apiVersion": "2018-06-01",
     "learnMore": {
         "url": "https://docs.microsoft.com/cli/azure/datafactory"

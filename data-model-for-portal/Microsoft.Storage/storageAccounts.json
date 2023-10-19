@@ -1,5 +1,5 @@
 {
-    "resourceType": "storage",
+    "resourceType": "storageAccounts",
     "apiVersion": "2022-09-01",
     "learnMore": {
         "url": "https://docs.microsoft.com/cli/azure/storage/account"

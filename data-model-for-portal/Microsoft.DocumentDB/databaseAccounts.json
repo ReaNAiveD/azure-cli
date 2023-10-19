@@ -1,5 +1,5 @@
 {
-    "resourceType": "cosmos-db",
+    "resourceType": "databaseAccounts",
     "apiVersion": "2022-11-15",
     "learnMore": {
         "url": "https://docs.microsoft.com/cli/azure/cosmosdb"
