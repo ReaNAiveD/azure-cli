@@ -1,0 +1,111 @@
+{
+    "resourceType": "locations/publishers/artifacttypes/types/versions",
+    "apiVersion": "2022-11-01",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/vm/extension/image"
+    },
+    "commands": [
+        {
+            "name": "az vm extension image show",
+            "description": "Display information for an extension.",
+            "path": "/subscriptions/{subscriptionId}/providers/Microsoft.Compute/locations/{location}/publishers/{publisherName}/artifacttypes/vmextension/types/{type}/versions/{version}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vm/extension/image#az-vm-extension-image-show"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--location]",
+                            "[--publisher]",
+                            "[--publisher-name]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--type]",
+                            "[--version]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Show the CustomScript extension version 2.0.2.",
+                    "parameters": [
+                        {
+                            "name": "--location",
+                            "value": "[path.location]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.type]"
+                        },
+                        {
+                            "name": "--publisher",
+                            "value": "[path.publisherName]"
+                        },
+                        {
+                            "name": "--version",
+                            "value": "[path.version]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az vmss extension image show",
+            "description": "Get a virtual machine extension image.",
+            "path": "/subscriptions/{subscriptionId}/providers/Microsoft.Compute/locations/{location}/publishers/{publisherName}/artifacttypes/vmextension/types/{type}/versions/{version}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vmss/extension/image#az-vmss-extension-image-show"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--location]",
+                            "[--publisher]",
+                            "[--publisher-name]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--type]",
+                            "[--version]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Get a virtual machine extension image.",
+                    "parameters": [
+                        {
+                            "name": "--location",
+                            "value": "[path.location]"
+                        },
+                        {
+                            "name": "--publisher",
+                            "value": "[path.publisherName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.type]"
+                        },
+                        {
+                            "name": "--version",
+                            "value": "[path.version]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,89 @@
+{
+    "resourceType": "diskAccesses",
+    "apiVersion": "2020-05-01",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/disk-access"
+    },
+    "commands": [
+        {
+            "name": "az disk-access delete",
+            "description": "Delete a disk access resource.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/diskAccesses/{diskAccessName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/disk-access#az-disk-access-delete"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--name]",
+                            "[--disk-access-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Delete a disk access resource.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.diskAccessName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az disk-access show",
+            "description": "Get information about a disk access resource.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/diskAccesses/{diskAccessName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/disk-access#az-disk-access-show"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--name]",
+                            "[--disk-access-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Get information of a disk access resource.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.diskAccessName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

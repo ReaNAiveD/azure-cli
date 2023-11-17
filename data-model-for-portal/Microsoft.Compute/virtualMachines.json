@@ -1,10 +1,11 @@
 {
     "resourceType": "virtualMachines",
-    "apiVersion": "2021-11-01",
+    "apiVersion": "2022-11-01",
     "learnMore": {
         "url": "https://docs.microsoft.com/cli/azure/vm"
     },
     "commands": [
+
         {
             "name": "az vm show",
             "description": "Get the details of a VM",
@@ -22,7 +23,7 @@
                             "[--name]",
                             "[--resource-group]",
                             "[--show-details]",
-                            "[--subscription]" 
+                            "[--subscription]"
                         ]
                     }
                 ]
@@ -49,27 +50,27 @@
         },
         {
             "name": "az vm start",
-            "description": "Start a stopped VM",
+            "description": "Start a stopped VM.",
             "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/start",
+            "confirmation": false,
             "help": {
                 "learnMore": {
                     "url": "https://docs.microsoft.com/cli/azure/vm#az-vm-start"
                 },
-                "parameterSets":[
+                "parameterSets": [
                     {
                         "parameters": [
-                            "[--ids]",
-                            "[--name]",
                             "[--resource-group]",
                             "[--subscription]",
-                            "[--no-wait]"
+                            "[--name]",
+                            "[--vm-name]"
                         ]
                     }
                 ]
             },
             "examples": [
                 {
-                    "description": "Start a VM in your resource group",
+                    "description": "Start a stopped VM.",
                     "parameters": [
                         {
                             "name": "--resource-group",
@@ -124,42 +125,6 @@
                         {
                             "name": "--subscription",
                             "value": "[path.subscriptionId]"
-                        }
-                    ]
-                }
-            ]
-        },
-        {
-            "name": "az vm list",
-            "description": "List details of Virtual Machines.",
-            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines",
-            "confirmation": false,
-            "help": {
-                "learnMore": {
-                    "url": "https://docs.microsoft.com/cli/azure/vm#az-vm-list"
-                },
-                "parameterSets": [
-                    {
-                        "parameters": [
-                            "[--resource-group]",
-                            "[--show-details]",
-                            "[--vmss]",
-                            "[--subscription]"
-                        ]
-                    }
-                ]
-            },
-            "examples": [
-                {
-                    "description": "List all VMs by resource group.",
-                    "parameters": [
-                        {
-                            "name": "--subscription",
-                            "value": "[path.subscriptionId]"
-                        },
-                        {
-                            "name": "--resource-group",
-                            "value": "[path.resourceGroupName]"
                         }
                     ]
                 }
@@ -397,6 +362,367 @@
                         {
                             "name": "--vm-name",
                             "value": "[path.vmName]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az vm assess-patches",
+            "description": "Assess patches on a VM.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/assessPatches",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vm#az-vm-assess-patches"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--vm-name]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Assess patches on a VM.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.vmName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az vm convert",
+            "description": "Convert a VM with unmanaged disks to use managed disks.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/convertToManagedDisks",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vm#az-vm-convert"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--vm-name]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Convert a VM with unmanaged disks to use managed disks.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.vmName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az vm deallocate",
+            "description": "Deallocate a VM so that computing resources are no longer allocated (charges no longer apply). The status will change from 'Stopped' to 'Stopped (Deallocated)'.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/deallocate",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vm#az-vm-deallocate"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--vm-name]",
+                            "[--hibernate]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Deallocate, generalize, and capture a stopped virtual machine.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.vmName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az vm generalize",
+            "description": "Mark a VM as generalized, allowing it to be imaged for multiple deployments.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/generalize",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vm#az-vm-generalize"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--vm-name]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Deallocate, generalize, and capture a stopped virtual machine.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.vmName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az vm list-vm-resize-options",
+            "description": "List available resizing options for VMs.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/vmSizes",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vm#az-vm-list-vm-resize-options"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--vm-name]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "List all available VM sizes for resizing.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.vmName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az vm perform-maintenance",
+            "description": "The operation to perform maintenance on a virtual machine.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/performMaintenance",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vm#az-vm-perform-maintenance"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--vm-name]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "The operation to perform maintenance on a virtual machine.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.vmName]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az vm reapply",
+            "description": "Reapply VMs.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/reapply",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vm#az-vm-reapply"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--vm-name]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Reapply a VM.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.vmName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az vm redeploy",
+            "description": "Redeploy an existing VM.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/redeploy",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vm#az-vm-redeploy"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--vm-name]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Redeploy a VM.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.vmName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az vm simulate-eviction",
+            "description": "Simulate the eviction of a Spot VM.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/simulateEviction",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vm#az-vm-simulate-eviction"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--vm-name]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Simulate the eviction of a Spot VM.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.vmName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
                         }
                     ]
                 }

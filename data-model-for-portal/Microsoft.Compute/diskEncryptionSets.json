@@ -1,0 +1,129 @@
+{
+    "resourceType": "diskEncryptionSets",
+    "apiVersion": "2022-03-02",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/disk-encryption-set"
+    },
+    "commands": [
+        {
+            "name": "az disk-encryption-set delete",
+            "description": "Delete a disk encryption set.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/diskEncryptionSets/{diskEncryptionSetName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/disk-encryption-set#az-disk-encryption-set-delete"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--name]",
+                            "[--disk-encryption-set-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Delete a disk encryption set.",
+                    "parameters": [
+                        {
+                            "name": "--name",
+                            "value": "[path.diskEncryptionSetName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az disk-encryption-set list-associated-resources",
+            "description": "List all resources that are encrypted with this disk encryption set.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/diskEncryptionSets/{diskEncryptionSetName}/associatedResources",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/disk-encryption-set#az-disk-encryption-set-list-associated-resources"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--name]",
+                            "[--disk-encryption-set-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "List all resources that are encrypted with this disk encryption set.",
+                    "parameters": [
+                        {
+                            "name": "--name",
+                            "value": "[path.diskEncryptionSetName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az disk-encryption-set show",
+            "description": "Get information about a disk encryption set.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/diskEncryptionSets/{diskEncryptionSetName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/disk-encryption-set#az-disk-encryption-set-show"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--name]",
+                            "[--disk-encryption-set-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Get information of a disk encryption sets",
+                    "parameters": [
+                        {
+                            "name": "--name",
+                            "value": "[path.diskEncryptionSetName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

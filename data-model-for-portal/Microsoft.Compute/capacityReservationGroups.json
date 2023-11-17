@@ -1,0 +1,89 @@
+{
+    "resourceType": "capacityReservationGroups",
+    "apiVersion": "2022-08-01",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/capacity/reservation"
+    },
+    "commands": [
+        {
+            "name": "az capacity reservation list",
+            "description": "List all of the capacity reservations in the specified capacity reservation group. Use the nextLink property in the response to get the next page of capacity reservations.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/capacityReservationGroups/{capacityReservationGroupName}/capacityReservations",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/capacity/reservation#az-capacity-reservation-list"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--capacity-reservation-group]",
+                            "[--capacity-reservation-group-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "List capacity reservation.",
+                    "parameters": [
+                        {
+                            "name": "--capacity-reservation-group",
+                            "value": "[path.capacityReservationGroupName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az capacity reservation group delete",
+            "description": "Delete operation to delete a capacity reservation group. This operation is allowed only if all the associated resources are disassociated from the reservation group and all capacity reservations under the reservation group have also been deleted. Please refer to https://aka.ms/CapacityReservation for more details.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/capacityReservationGroups/{capacityReservationGroupName}",
+            "confirmation": true,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/capacity/reservation/group#az-capacity-reservation-group-delete"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--capacity-reservation-group]",
+                            "[--capacity-reservation-group-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Delete operation to delete a capacity reservation group. This operation is allowed only if all the associated resources are disassociated from the reservation group and all capacity reservations under the reservation group have also been deleted. Please refer to https://aka.ms/CapacityReservation for more details.",
+                    "parameters": [
+                        {
+                            "name": "--capacity-reservation-group",
+                            "value": "[path.capacityReservationGroupName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

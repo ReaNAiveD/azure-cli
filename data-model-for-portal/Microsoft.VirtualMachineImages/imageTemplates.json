@@ -1,0 +1,48 @@
+{
+    "resourceType": "imageTemplates",
+    "apiVersion": "2022-07-01",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/image/builder/trigger"
+    },
+    "commands": [
+        {
+            "name": "az image builder trigger list",
+            "description": "List all triggers for the specified Image Template resource",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.VirtualMachineImages/imageTemplates/{imageTemplateName}/triggers",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/image/builder/trigger#az-image-builder-trigger-list"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--image-template-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "List all triggers for the specified Image Template resource",
+                    "parameters": [
+                        {
+                            "name": "--image-template-name",
+                            "value": "[path.imageTemplateName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,99 @@
+{
+    "resourceType": "imageTemplates/triggers",
+    "apiVersion": "2022-07-01",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/image/builder/trigger"
+    },
+    "commands": [
+        {
+            "name": "az image builder trigger delete",
+            "description": "Delete a trigger for the specified virtual machine image template",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.VirtualMachineImages/imageTemplates/{imageTemplateName}/triggers/{triggerName}",
+            "confirmation": true,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/image/builder/trigger#az-image-builder-trigger-delete"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--image-template-name]",
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--trigger-name]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Delete a trigger for the specified virtual machine image template",
+                    "parameters": [
+                        {
+                            "name": "--image-template-name",
+                            "value": "[path.imageTemplateName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.triggerName]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az image builder trigger show",
+            "description": "Get the specified trigger for the specified image template resource",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.VirtualMachineImages/imageTemplates/{imageTemplateName}/triggers/{triggerName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/image/builder/trigger#az-image-builder-trigger-show"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--image-template-name]",
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--trigger-name]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Get the specified trigger for the specified image template resource",
+                    "parameters": [
+                        {
+                            "name": "--image-template-name",
+                            "value": "[path.imageTemplateName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.triggerName]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

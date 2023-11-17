@@ -1,0 +1,129 @@
+{
+    "resourceType": "disks",
+    "apiVersion": "2022-07-02",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/disk"
+    },
+    "commands": [
+        {
+            "name": "az disk delete",
+            "description": "Delete a managed disk.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/disks/{diskName}",
+            "confirmation": true,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/disk#az-disk-delete"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--name]",
+                            "[--disk-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Delete a managed disk.",
+                    "parameters": [
+                        {
+                            "name": "--name",
+                            "value": "[path.diskName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az disk revoke-access",
+            "description": "Revoke a resource's read access to a managed disk.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/disks/{diskName}/endGetAccess",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/disk#az-disk-revoke-access"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--name]",
+                            "[--disk-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Revoke a resource's read access to a managed disk.",
+                    "parameters": [
+                        {
+                            "name": "--name",
+                            "value": "[path.diskName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az disk show",
+            "description": "Get information about a disk.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/disks/{diskName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/disk#az-disk-show"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--name]",
+                            "[--disk-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Get information about a disk.",
+                    "parameters": [
+                        {
+                            "name": "--name",
+                            "value": "[path.diskName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

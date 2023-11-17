@@ -1,0 +1,296 @@
+{
+    "resourceType": "virtualMachineScaleSets",
+    "apiVersion": "2023-03-01",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/vmss"
+    },
+    "commands": [
+        {
+            "name": "az vmss delete",
+            "description": "Delete a VM scale set.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachineScaleSets/{vmScaleSetName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vmss#az-vmss-delete"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--vm-scale-set-name]",
+                            "[--force-deletion]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Delete a VM scale set.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.vmScaleSetName]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az vmss get-os-upgrade-history",
+            "description": "List the OS upgrades on a VM scale set instance.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachineScaleSets/{vmScaleSetName}/osUpgradeHistory",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vmss#az-vmss-get-os-upgrade-history"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--vm-scale-set-name]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "List the OS upgrades on a VM scale set instance.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.vmScaleSetName]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az vmss list-instances",
+            "description": "List all virtual machines in a VM scale sets.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachineScaleSets/{virtualMachineScaleSetName}/virtualMachines",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vmss#az-vmss-list-instances"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--virtual-machine-scale-set-name]",
+                            "[--expand]",
+                            "[--filter]",
+                            "[--select]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "List all virtual machines in a VM scale sets.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.virtualMachineScaleSetName]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az vmss list-skus",
+            "description": "List SKUs available for your VM scale set, including the minimum and maximum VM instances allowed for each SKU.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachineScaleSets/{vmScaleSetName}/skus",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vmss#az-vmss-list-skus"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--vm-scale-set-name]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "List SKUs available for your VM scale set, including the minimum and maximum VM instances allowed for each SKU.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.vmScaleSetName]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az vmss rolling-upgrade cancel",
+            "description": "Cancel the current virtual machine scale set rolling upgrade.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachineScaleSets/{vmScaleSetName}/rollingUpgrades/cancel",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vmss/rolling-upgrade#az-vmss-rolling-upgrade-cancel"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--vm-scale-set-name]",
+                            "[--virtual-machine-scale-set-name]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Cancel the current virtual machine scale set rolling upgrade.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.vmScaleSetName]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az vmss rolling-upgrade get-latest",
+            "description": "Get the status of the latest virtual machine scale set rolling upgrade.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachineScaleSets/{vmScaleSetName}/rollingUpgrades/latest",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vmss/rolling-upgrade#az-vmss-rolling-upgrade-get-latest"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--vm-scale-set-name]",
+                            "[--virtual-machine-scale-set-name]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Get the status of the latest virtual machine scale set rolling upgrade.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.vmScaleSetName]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az vmss rolling-upgrade start",
+            "description": "Start a rolling upgrade to move all virtual machine scale set instances to the latest available Platform Image OS version. Instances which are already running the latest available OS version are not affected.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachineScaleSets/{vmScaleSetName}/osRollingUpgrade",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vmss/rolling-upgrade#az-vmss-rolling-upgrade-start"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--vm-scale-set-name]",
+                            "[--virtual-machine-scale-set-name]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Start a rolling upgrade to move all virtual machine scale set instances to the latest available Platform Image OS version. Instances which are already running the latest available OS version are not affected.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.vmScaleSetName]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

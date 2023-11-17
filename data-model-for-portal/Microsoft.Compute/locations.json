@@ -1,0 +1,43 @@
+{
+    "resourceType": "locations",
+    "apiVersion": "2022-11-01",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/vm"
+    },
+    "commands": [
+        {
+            "name": "az vm list-sizes",
+            "description": "List available sizes for VMs.",
+            "path": "/subscriptions/{subscriptionId}/providers/Microsoft.Compute/locations/{location}/vmSizes",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vm#az-vm-list-sizes"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--location]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "List the available VM sizes in the West US region.",
+                    "parameters": [
+                        {
+                            "name": "--location",
+                            "value": "[path.location]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

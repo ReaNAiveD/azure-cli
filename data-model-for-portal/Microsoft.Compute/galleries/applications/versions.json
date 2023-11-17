@@ -1,0 +1,114 @@
+{
+    "resourceType": "galleries/applications/versions",
+    "apiVersion": "2022-01-03",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/sig/gallery-application/version"
+    },
+    "commands": [
+        {
+            "name": "az sig gallery-application version delete",
+            "description": "Delete a gallery Application Version.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/galleries/{galleryName}/applications/{galleryApplicationName}/versions/{galleryApplicationVersionName}",
+            "confirmation": true,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/sig/gallery-application/version#az-sig-gallery-application-version-delete"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--application-name]",
+                            "[--gallery-application-name]",
+                            "[--name]",
+                            "[--version-name]",
+                            "[--gallery-application-version-name]",
+                            "[--gallery-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Delete a gallery Application Version.",
+                    "parameters": [
+                        {
+                            "name": "--application-name",
+                            "value": "[path.galleryApplicationName]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.galleryApplicationVersionName]"
+                        },
+                        {
+                            "name": "--gallery-name",
+                            "value": "[path.galleryName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az sig gallery-application version show",
+            "description": "Get information about a gallery Application Version.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/galleries/{galleryName}/applications/{galleryApplicationName}/versions/{galleryApplicationVersionName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/sig/gallery-application/version#az-sig-gallery-application-version-show"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--application-name]",
+                            "[--gallery-application-name]",
+                            "[--name]",
+                            "[--version-name]",
+                            "[--gallery-application-version-name]",
+                            "[--gallery-name]",
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--expand]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Get information about a gallery Application Version.",
+                    "parameters": [
+                        {
+                            "name": "--application-name",
+                            "value": "[path.galleryApplicationName]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.galleryApplicationVersionName]"
+                        },
+                        {
+                            "name": "--gallery-name",
+                            "value": "[path.galleryName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

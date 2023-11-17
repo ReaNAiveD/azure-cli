@@ -1,0 +1,90 @@
+{
+    "resourceType": "images",
+    "apiVersion": "2022-11-01",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/image"
+    },
+    "commands": [
+        {
+            "name": "az image delete",
+            "description": "Delete an Image.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/images/{imageName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/image#az-image-delete"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--name]",
+                            "[--image-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Delete an Image.",
+                    "parameters": [
+                        {
+                            "name": "--name",
+                            "value": "[path.imageName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az image show",
+            "description": "Get an image.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/images/{imageName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/image#az-image-show"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--name]",
+                            "[--image-name]",
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--expand]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Get an image.",
+                    "parameters": [
+                        {
+                            "name": "--name",
+                            "value": "[path.imageName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

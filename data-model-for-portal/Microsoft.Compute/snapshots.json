@@ -1,0 +1,129 @@
+{
+    "resourceType": "snapshots",
+    "apiVersion": "2022-03-02",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/snapshot"
+    },
+    "commands": [
+        {
+            "name": "az snapshot delete",
+            "description": "Delete a snapshot.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/snapshots/{snapshotName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/snapshot#az-snapshot-delete"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--name]",
+                            "[--snapshot-name]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Delete a snapshot.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.snapshotName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az snapshot revoke-access",
+            "description": "Revoke access to a snapshot.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/snapshots/{snapshotName}/endGetAccess",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/snapshot#az-snapshot-revoke-access"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--name]",
+                            "[--snapshot-name]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Revoke read access to a snapshot.",
+                    "parameters": [
+                        {
+                            "name": "--name",
+                            "value": "[path.snapshotName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az snapshot show",
+            "description": "Get information about a snapshot.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/snapshots/{snapshotName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/snapshot#az-snapshot-show"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--name]",
+                            "[--snapshot-name]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Get information about a snapshot.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.snapshotName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

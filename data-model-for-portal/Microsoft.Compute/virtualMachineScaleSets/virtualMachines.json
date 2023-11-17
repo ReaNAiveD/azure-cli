@@ -1,0 +1,54 @@
+{
+    "resourceType": "virtualMachineScaleSets/virtualMachines",
+    "apiVersion": "2023-03-01",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/vmss"
+    },
+    "commands": [
+        {
+            "name": "az vmss simulate-eviction",
+            "description": "Simulate the eviction of a Spot virtual machine in a VM scale set.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachineScaleSets/{vmScaleSetName}/virtualMachines/{instanceId}/simulateEviction",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vmss#az-vmss-simulate-eviction"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--instance-id]",
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--vm-scale-set-name]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Simulate the eviction of a Spot virtual machine in a VM scale set.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.vmScaleSetName]"
+                        },
+                        {
+                            "name": "--instance-id",
+                            "value": "[path.instanceId]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

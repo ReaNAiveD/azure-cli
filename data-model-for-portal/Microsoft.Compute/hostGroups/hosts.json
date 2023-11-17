@@ -1,0 +1,193 @@
+{
+    "resourceType": "hostGroups/hosts",
+    "apiVersion": "2022-11-01",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/vm/host"
+    },
+    "commands": [
+        {
+            "name": "az vm host delete",
+            "description": "Delete a dedicated host.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/hostGroups/{hostGroupName}/hosts/{hostName}",
+            "confirmation": true,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vm/host#az-vm-host-delete"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--host-group]",
+                            "[--host-group-name]",
+                            "[--name]",
+                            "[--host-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Delete a dedicated host.",
+                    "parameters": [
+                        {
+                            "name": "--host-group",
+                            "value": "[path.hostGroupName]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.hostName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az vm host list-resize-options",
+            "description": "List all available dedicated host sizes to which the specified dedicated host can be resized. NOTE: The dedicated host sizes provided can be used to only scale up the existing dedicated host.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/hostGroups/{hostGroupName}/hosts/{hostName}/hostSizes",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vm/host#az-vm-host-list-resize-options"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--host-group]",
+                            "[--host-group-name]",
+                            "[--name]",
+                            "[--host-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "List all available dedicated host sizes to which the specified dedicated host can be resized.",
+                    "parameters": [
+                        {
+                            "name": "--host-group",
+                            "value": "[path.hostGroupName]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.hostName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az vm host restart",
+            "description": "Restart the dedicated host.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/hostGroups/{hostGroupName}/hosts/{hostName}/restart",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vm/host#az-vm-host-restart"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--host-group]",
+                            "[--host-group-name]",
+                            "[--host-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Restart the dedicated host.",
+                    "parameters": [
+                        {
+                            "name": "--host-group",
+                            "value": "[path.hostGroupName]"
+                        },
+                        {
+                            "name": "--host-name",
+                            "value": "[path.hostName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az vm host show",
+            "description": "Get the details of a dedicated host.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/hostGroups/{hostGroupName}/hosts/{hostName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vm/host#az-vm-host-show"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--host-group]",
+                            "[--host-group-name]",
+                            "[--name]",
+                            "[--host-name]",
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--expand]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Get the details of a dedicated host.",
+                    "parameters": [
+                        {
+                            "name": "--host-group",
+                            "value": "[path.hostGroupName]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.hostName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

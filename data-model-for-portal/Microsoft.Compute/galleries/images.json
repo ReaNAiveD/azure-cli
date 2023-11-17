@@ -1,0 +1,144 @@
+{
+    "resourceType": "galleries/images",
+    "apiVersion": "2021-10-01",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/sig/image-definition"
+    },
+    "commands": [
+        {
+            "name": "az sig image-definition delete",
+            "description": "Delete a gallery image.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/galleries/{galleryName}/images/{galleryImageName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/sig/image-definition#az-sig-image-definition-delete"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--gallery-image-name]",
+                            "[--gallery-image-definition]",
+                            "[--gallery-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Delete a gallery image.",
+                    "parameters": [
+                        {
+                            "name": "--gallery-image-name",
+                            "value": "[path.galleryImageName]"
+                        },
+                        {
+                            "name": "--gallery-name",
+                            "value": "[path.galleryName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az sig image-definition show",
+            "description": "Get information about a gallery image definition.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/galleries/{galleryName}/images/{galleryImageName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/sig/image-definition#az-sig-image-definition-show"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--gallery-image-name]",
+                            "[--gallery-image-definition]",
+                            "[--gallery-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Get information about a gallery image definition.",
+                    "parameters": [
+                        {
+                            "name": "--gallery-image-name",
+                            "value": "[path.galleryImageName]"
+                        },
+                        {
+                            "name": "--gallery-name",
+                            "value": "[path.galleryName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az sig image-version list",
+            "description": "List gallery image versions in a gallery image definition.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/galleries/{galleryName}/images/{galleryImageName}/versions",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/sig/image-version#az-sig-image-version-list"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--gallery-image-name]",
+                            "[--gallery-image-definition]",
+                            "[--gallery-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "List gallery image versions in a gallery image definition.",
+                    "parameters": [
+                        {
+                            "name": "--gallery-image-name",
+                            "value": "[path.galleryImageName]"
+                        },
+                        {
+                            "name": "--gallery-name",
+                            "value": "[path.galleryName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

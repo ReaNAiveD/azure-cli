@@ -1,0 +1,107 @@
+{
+    "resourceType": "locations/publishers/artifacttypes/types",
+    "apiVersion": "2022-11-01",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/vm/extension/image"
+    },
+    "commands": [
+        {
+            "name": "az vm extension image list-versions",
+            "description": "List the versions for available extensions.",
+            "path": "/subscriptions/{subscriptionId}/providers/Microsoft.Compute/locations/{location}/publishers/{publisherName}/artifacttypes/vmextension/types/{type}/versions",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vm/extension/image#az-vm-extension-image-list-versions"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--location]",
+                            "[--publisher]",
+                            "[--publisher-name]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--type]",
+                            "[--filter]",
+                            "[--orderby]",
+                            "[--top]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "List the versions for available extensions.",
+                    "parameters": [
+                        {
+                            "name": "--location",
+                            "value": "[path.location]"
+                        },
+                        {
+                            "name": "--publisher",
+                            "value": "[path.publisherName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.type]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az vmss extension image list-versions",
+            "description": "List virtual machine extension image versions.",
+            "path": "/subscriptions/{subscriptionId}/providers/Microsoft.Compute/locations/{location}/publishers/{publisherName}/artifacttypes/vmextension/types/{type}/versions",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vmss/extension/image#az-vmss-extension-image-list-versions"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--location]",
+                            "[--publisher]",
+                            "[--publisher-name]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--type]",
+                            "[--filter]",
+                            "[--orderby]",
+                            "[--top]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "List virtual machine extension image versions.",
+                    "parameters": [
+                        {
+                            "name": "--location",
+                            "value": "[path.location]"
+                        },
+                        {
+                            "name": "--publisher",
+                            "value": "[path.publisherName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.type]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

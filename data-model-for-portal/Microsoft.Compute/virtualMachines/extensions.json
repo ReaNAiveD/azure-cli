@@ -1,6 +1,6 @@
 {
     "resourceType": "virtualMachines/extensions",
-    "apiVersion": "2021-11-01",
+    "apiVersion": "2022-11-01",
     "learnMore": {
         "url": "https://docs.microsoft.com/cli/azure/vm/extension"
     },
@@ -48,6 +48,51 @@
                         {
                             "name": "--name",
                             "value": "[path.vmExtensionName]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az vm extension delete",
+            "description": "Delete operation to delete the extension.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/virtualMachines/{vmName}/extensions/{vmExtensionName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vm/extension#az-vm-extension-delete"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--subscription]",
+                            "[--name]",
+                            "[--vm-extension-name]",
+                            "[--vm-name]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Use a VM name and extension to delete an extension from a VM.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--vm-name",
+                            "value": "[path.vmName]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.vmExtensionName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
                         }
                     ]
                 }

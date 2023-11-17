@@ -1,0 +1,49 @@
+{
+    "resourceType": "locations/sharedGalleries",
+    "apiVersion": "2022-01-03",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/sig"
+    },
+    "commands": [
+        {
+            "name": "az sig show-shared",
+            "description": "Get a gallery that has been shared directly to your subscription or tenant.",
+            "path": "/subscriptions/{subscriptionId}/providers/Microsoft.Compute/locations/{location}/sharedGalleries/{galleryUniqueName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/sig#az-sig-show-shared"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--name]",
+                            "[--gallery-unique-name]",
+                            "[--location]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Get a gallery that has been shared directly to your subscription or tenant in the given location.",
+                    "parameters": [
+                        {
+                            "name": "--name",
+                            "value": "[path.galleryUniqueName]"
+                        },
+                        {
+                            "name": "--location",
+                            "value": "[path.location]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

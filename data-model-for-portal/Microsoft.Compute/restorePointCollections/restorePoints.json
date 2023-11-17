@@ -1,0 +1,55 @@
+{
+    "resourceType": "restorePointCollections/restorePoints",
+    "apiVersion": "2022-08-01",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/restore-point"
+    },
+    "commands": [
+        {
+            "name": "az restore-point delete",
+            "description": "Delete the restore point.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/restorePointCollections/{restorePointCollectionName}/restorePoints/{restorePointName}",
+            "confirmation": true,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/restore-point#az-restore-point-delete"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--collection-name]",
+                            "[--restore-point-collection-name]",
+                            "[--name]",
+                            "[--restore-point-name]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Delete the restore point.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--collection-name",
+                            "value": "[path.restorePointCollectionName]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.restorePointName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

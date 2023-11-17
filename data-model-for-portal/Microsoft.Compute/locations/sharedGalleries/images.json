@@ -1,0 +1,54 @@
+{
+    "resourceType": "locations/sharedGalleries/images",
+    "apiVersion": "2022-01-03",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/sig/image-definition"
+    },
+    "commands": [
+        {
+            "name": "az sig image-definition show-shared",
+            "description": "Get a shared gallery image",
+            "path": "/subscriptions/{subscriptionId}/providers/Microsoft.Compute/locations/{location}/sharedGalleries/{galleryUniqueName}/images/{galleryImageName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/sig/image-definition#az-sig-image-definition-show-shared"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--gallery-image-name]",
+                            "[--gallery-image-definition]",
+                            "[--gallery-unique-name]",
+                            "[--location]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Get an image definition in a gallery shared directly to your subscription or tenant in the given location.",
+                    "parameters": [
+                        {
+                            "name": "--gallery-unique-name",
+                            "value": "[path.galleryUniqueName]"
+                        },
+                        {
+                            "name": "--gallery-image-name",
+                            "value": "[path.galleryImageName]"
+                        },
+                        {
+                            "name": "--location",
+                            "value": "[path.location]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

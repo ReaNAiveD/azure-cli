@@ -1,0 +1,49 @@
+{
+    "resourceType": "restorePointCollections",
+    "apiVersion": "2022-11-01",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/restore-point/collection"
+    },
+    "commands": [
+        {
+            "name": "az restore-point collection delete",
+            "description": "Delete the restore point collection. This operation will also delete all the contained restore points.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/restorePointCollections/{restorePointCollectionName}",
+            "confirmation": true,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/restore-point/collection#az-restore-point-collection-delete"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--resource-group]",
+                            "[--collection-name]",
+                            "[--restore-point-collection-name]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Delete the restore point collection. This operation will also delete all the contained restore points.",
+                    "parameters": [
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--collection-name",
+                            "value": "[path.restorePointCollectionName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

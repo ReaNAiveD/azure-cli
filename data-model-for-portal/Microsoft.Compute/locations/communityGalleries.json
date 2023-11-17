@@ -1,0 +1,49 @@
+{
+    "resourceType": "locations/communityGalleries",
+    "apiVersion": "2022-01-03",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/sig"
+    },
+    "commands": [
+        {
+            "name": "az sig show-community",
+            "description": "Get a community gallery by gallery public name.",
+            "path": "/subscriptions/{subscriptionId}/providers/Microsoft.Compute/locations/{location}/communityGalleries/{publicGalleryName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/sig#az-sig-show-community"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--location]",
+                            "[--name]",
+                            "[--public-gallery-name]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Get a community gallery by gallery public name.",
+                    "parameters": [
+                        {
+                            "name": "--location",
+                            "value": "[path.location]"
+                        },
+                        {
+                            "name": "--name",
+                            "value": "[path.publicGalleryName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

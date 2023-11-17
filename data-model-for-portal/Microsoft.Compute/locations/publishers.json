@@ -1,0 +1,89 @@
+{
+    "resourceType": "locations/publishers",
+    "apiVersion": "2022-11-01",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/vm/extension/image"
+    },
+    "commands": [
+        {
+            "name": "az vm extension image list-names",
+            "description": "List the names of available extensions.",
+            "path": "/subscriptions/{subscriptionId}/providers/Microsoft.Compute/locations/{location}/publishers/{publisherName}/artifacttypes/vmextension/types",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vm/extension/image#az-vm-extension-image-list-names"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--location]",
+                            "[--publisher]",
+                            "[--publisher-name]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "List the names of available extensions.",
+                    "parameters": [
+                        {
+                            "name": "--location",
+                            "value": "[path.location]"
+                        },
+                        {
+                            "name": "--publisher",
+                            "value": "[path.publisherName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az vmss extension image list-names",
+            "description": "List virtual machine extension image types.",
+            "path": "/subscriptions/{subscriptionId}/providers/Microsoft.Compute/locations/{location}/publishers/{publisherName}/artifacttypes/vmextension/types",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/vmss/extension/image#az-vmss-extension-image-list-names"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--location]",
+                            "[--publisher]",
+                            "[--publisher-name]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "List virtual machine extension image types.",
+                    "parameters": [
+                        {
+                            "name": "--location",
+                            "value": "[path.location]"
+                        },
+                        {
+                            "name": "--publisher",
+                            "value": "[path.publisherName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

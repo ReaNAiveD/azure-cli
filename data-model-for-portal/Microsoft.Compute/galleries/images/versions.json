@@ -1,0 +1,60 @@
+{
+    "resourceType": "galleries/images/versions",
+    "apiVersion": "2022-03-03",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/sig/image-version"
+    },
+    "commands": [
+        {
+            "name": "az sig image-version delete",
+            "description": "Delete a gallery image version.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/galleries/{galleryName}/images/{galleryImageName}/versions/{galleryImageVersionName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/sig/image-version#az-sig-image-version-delete"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--gallery-image-name]",
+                            "[--gallery-image-definition]",
+                            "[--gallery-image-version]",
+                            "[--gallery-image-version-name]",
+                            "[--gallery-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Delete a gallery image version.",
+                    "parameters": [
+                        {
+                            "name": "--gallery-image-name",
+                            "value": "[path.galleryImageName]"
+                        },
+                        {
+                            "name": "--gallery-image-version",
+                            "value": "[path.galleryImageVersionName]"
+                        },
+                        {
+                            "name": "--gallery-name",
+                            "value": "[path.galleryName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

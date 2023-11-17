@@ -1,0 +1,60 @@
+{
+    "resourceType": "locations/communityGalleries/images/versions",
+    "apiVersion": "2022-01-03",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/sig/image-version"
+    },
+    "commands": [
+        {
+            "name": "az sig image-version show-community",
+            "description": "Get a community gallery image version.",
+            "path": "/subscriptions/{subscriptionId}/providers/Microsoft.Compute/locations/{location}/communityGalleries/{publicGalleryName}/images/{galleryImageName}/versions/{galleryImageVersionName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/sig/image-version#az-sig-image-version-show-community"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--gallery-image-name]",
+                            "[--gallery-image-definition]",
+                            "[--gallery-image-version]",
+                            "[--gallery-image-version-name]",
+                            "[--location]",
+                            "[--public-gallery-name]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Get a community gallery image version.",
+                    "parameters": [
+                        {
+                            "name": "--gallery-image-name",
+                            "value": "[path.galleryImageName]"
+                        },
+                        {
+                            "name": "--gallery-image-version",
+                            "value": "[path.galleryImageVersionName]"
+                        },
+                        {
+                            "name": "--location",
+                            "value": "[path.location]"
+                        },
+                        {
+                            "name": "--public-gallery-name",
+                            "value": "[path.publicGalleryName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

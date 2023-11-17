@@ -1,0 +1,146 @@
+{
+    "resourceType": "galleries/applications",
+    "apiVersion": "2021-07-01",
+    "learnMore": {
+        "url": "https://docs.microsoft.com/cli/azure/sig/gallery-application"
+    },
+    "commands": [
+        {
+            "name": "az sig gallery-application delete",
+            "description": "Delete a gallery Application.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/galleries/{galleryName}/applications/{galleryApplicationName}",
+            "confirmation": true,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/sig/gallery-application#az-sig-gallery-application-delete"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--name]",
+                            "[--application-name]",
+                            "[--gallery-application-name]",
+                            "[--gallery-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Delete a gallery Application.",
+                    "parameters": [
+                        {
+                            "name": "--name",
+                            "value": "[path.galleryApplicationName]"
+                        },
+                        {
+                            "name": "--gallery-name",
+                            "value": "[path.galleryName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az sig gallery-application show",
+            "description": "Get information about a gallery Application Definition.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/galleries/{galleryName}/applications/{galleryApplicationName}",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/sig/gallery-application#az-sig-gallery-application-show"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--name]",
+                            "[--application-name]",
+                            "[--gallery-application-name]",
+                            "[--gallery-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "Get information about a gallery Application Definition.",
+                    "parameters": [
+                        {
+                            "name": "--name",
+                            "value": "[path.galleryApplicationName]"
+                        },
+                        {
+                            "name": "--gallery-name",
+                            "value": "[path.galleryName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "az sig gallery-application version list",
+            "description": "List gallery application versions.",
+            "path": "/subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Compute/galleries/{galleryName}/applications/{galleryApplicationName}/versions",
+            "confirmation": false,
+            "help": {
+                "learnMore": {
+                    "url": "https://docs.microsoft.com/cli/azure/sig/gallery-application/version#az-sig-gallery-application-version-list"
+                },
+                "parameterSets": [
+                    {
+                        "parameters": [
+                            "[--application-name]",
+                            "[--gallery-application-name]",
+                            "[--gallery-name]",
+                            "[--resource-group]",
+                            "[--subscription]"
+                        ]
+                    }
+                ]
+            },
+            "examples": [
+                {
+                    "description": "List gallery application versions.",
+                    "parameters": [
+                        {
+                            "name": "--application-name",
+                            "value": "[path.galleryApplicationName]"
+                        },
+                        {
+                            "name": "--gallery-name",
+                            "value": "[path.galleryName]"
+                        },
+                        {
+                            "name": "--resource-group",
+                            "value": "[path.resourceGroupName]"
+                        },
+                        {
+                            "name": "--subscription",
+                            "value": "[path.subscriptionId]"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
