@@ -30,7 +30,9 @@ class InteractiveCommandsLoader(AzCommandsLoader):
     def load_command_table(self, _):
 
         with self.command_group('', operations_tmpl='azure.cli.command_modules.interactive.custom#{}') as g:
-            g.command('interactive', 'start_shell', is_preview=True)
+            g.command('interactive', 'start_shell', is_preview=True,
+                      deprecate_info=g.deprecate(message_func=lambda d: 'This command has been deprecated and '
+                                                                        'will be moved into extension in the future.'))
         return self.command_table
 
     def load_arguments(self, _):
