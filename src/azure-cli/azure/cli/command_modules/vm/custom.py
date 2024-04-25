@@ -616,6 +616,8 @@ def create_image(cmd, resource_group_name, name, source, os_type=None, data_disk
         'ImageOSDisk', 'ImageDataDisk', 'ImageStorageProfile', 'Image', 'SubResource', 'OperatingSystemStateTypes')
 
     if source_virtual_machine:
+        from azure.cli.core.breaking_change import BreakingChange, ExactVersion
+        BreakingChange('az image create', desc='breaking change desc', target_version=ExactVersion('3.0.0')).pre_announce(logger)
         location = location or _get_resource_group_location(cmd.cli_ctx, resource_group_name)
         image_storage_profile = None if zone_resilient is None else ImageStorageProfile(zone_resilient=zone_resilient)
         image = Image(location=location, source_virtual_machine=SubResource(id=source_virtual_machine),
