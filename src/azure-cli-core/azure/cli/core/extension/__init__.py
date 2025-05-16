@@ -9,6 +9,7 @@ import traceback
 import json
 import re
 from sysconfig import get_path
+from typing import Type
 
 import pkginfo
 from knack.config import CLIConfig
@@ -120,7 +121,7 @@ class Extension:
         raise NotImplementedError()
 
     @staticmethod
-    def get_all():
+    def get_all() -> list['Extension']:
         raise NotImplementedError()
 
 
@@ -179,7 +180,7 @@ class WheelExtension(Extension):
         return azext_metadata
 
     @staticmethod
-    def get_all():
+    def get_all() -> list['WheelExtension']:
         """
         Returns all wheel-based extensions.
         """
@@ -248,7 +249,7 @@ class DevExtension(Extension):
         return azext_metadata
 
     @staticmethod
-    def get_all():
+    def get_all() -> list['DevExtension']:
         """
         Returns all dev extensions.
         """
@@ -323,7 +324,7 @@ def build_extension_path(ext_name, system=None):
     return os.path.join(EXTENSIONS_SYS_DIR, ext_name) if system else os.path.join(EXTENSIONS_DIR, ext_name)
 
 
-def get_extensions(ext_type=None):
+def get_extensions(ext_type: list[Type[Extension]] | Type[Extension] | None = None) -> list[Extension]:
     extensions = []
     if not ext_type:
         ext_type = EXTENSION_TYPES
