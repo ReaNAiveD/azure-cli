@@ -5,7 +5,7 @@ from knack.log import get_logger
 logger = get_logger(__name__)
 
 class CommandIndex:
-    from azure.cli.app.cli import AzCli
+    from azure.cli.core import AzCli
 
     _COMMAND_INDEX = 'commandIndex'
     _COMMAND_INDEX_VERSION = 'version'

@@ -5,7 +5,7 @@ description = "Microsoft Azure Command-Line Tools"
 authors = [
     { name = "Microsoft Corporation", email = "azpycli@microsoft.com" }
 ]
-license = { text = "MIT" }
+license = "MIT"
 readme = "README.rst"
 requires-python = ">=3.9.0"
 classifiers = [

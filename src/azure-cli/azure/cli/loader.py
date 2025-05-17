@@ -12,9 +12,9 @@ import sys
 import timeit
 import traceback
 
-from azure.cli.app.index import CommandIndex
+from azure.cli.index import CommandIndex
 from azure.cli.core import AzCommandsLoader, ModExtensionSuppress
-from azure.cli.core.breaking_change import import_extension_breaking_changes, import_module_breaking_changes
+from azure.cli.core.breaking_change import import_core_breaking_changes, import_extension_breaking_changes, import_module_breaking_changes
 from azure.cli.core.commands import ExtensionCommandSource
 from azure.cli.core.extension import Extension, get_extension_modname, get_extension_path, get_extensions
 from knack.commands import CLICommandsLoader
@@ -24,8 +24,6 @@ from knack.util import CLIError
 logger = get_logger(__name__)
 
 BLOCKED_MODS = ['context', 'shell', 'documentdb', 'component']
-EXCLUDED_PARAMS = ['self', 'raw', 'polling', 'custom_headers', 'operation_config',
-                   'content_version', 'kwargs', 'client', 'no_wait']
 EVENT_FAILED_EXTENSION_LOAD = 'MainLoader.OnFailedExtensionLoad'
 
 # [Reserved, in case of future usage]
@@ -35,37 +33,20 @@ ALWAYS_LOADED_MODULES = []
 ALWAYS_LOADED_EXTENSIONS = ['azext_ai_examples', 'azext_next']
 
 
-def _load_command_loader(loader, args, name, prefix):
-    module = import_module(prefix + name)
-    loader_cls = getattr(module, 'COMMAND_LOADER_CLS', None)
-    if not loader_cls:
-        try:
-            get_command_loader = getattr(module, 'get_command_loader', None)
-            loader_cls = get_command_loader(loader.cli_ctx)
-        except (ImportError, AttributeError, TypeError):
-            logger.debug("Module '%s' is missing `get_command_loader` entry.", name)
-
-    command_table = {}
-
-    if loader_cls:
-        command_loader = loader_cls(cli_ctx=loader.cli_ctx)
-        loader.loaders.append(command_loader)  # This will be used by interactive
-        if command_loader.supported_resource_type():
-            command_table = command_loader.load_command_table(args)
-            if command_table:
-                for cmd in list(command_table.keys()):
-                    # TODO: If desired to for extension to patch module, this can be uncommented
-                    # if loader.cmd_to_loader_map.get(cmd):
-                    #    loader.cmd_to_loader_map[cmd].append(command_loader)
-                    # else:
-                    loader.cmd_to_loader_map[cmd] = [command_loader]
-    else:
-        logger.debug("Module '%s' is missing `COMMAND_LOADER_CLS` entry.", name)
-    return command_table, command_loader.command_group_table
+def _get_extension_suppressions(mod_loaders):
+    res = []
+    for m in mod_loaders:
+        suppressions = getattr(m, 'suppress_extension', None)
+        if suppressions:
+            suppressions = suppressions if isinstance(suppressions, list) else [suppressions]
+            for sup in suppressions:
+                if isinstance(sup, ModExtensionSuppress):
+                    res.append(sup)
+    return res
 
 
 class MainCommandsLoader(CLICommandsLoader):
-    from azure.cli.app.cli import AzCli
+    from azure.cli.core import AzCli
 
     # Format string for pretty-print the command module table
     header_mod = "%-20s %10s %9s %9s" % ("Name", "Load Time", "Groups", "Commands")
@@ -75,7 +56,7 @@ class MainCommandsLoader(CLICommandsLoader):
 
     def __init__(self, cli_ctx: AzCli | None = None):
         super().__init__(cli_ctx)
-        self.cmd_to_loader_map: dict[str, AzCommandsLoader] = {}
+        self.cmd_to_loader_map: dict[str, list[AzCommandsLoader]] = {}
         self.loaders: list[AzCommandsLoader] = []
 
     def _update_command_definitions(self):
@@ -87,43 +68,6 @@ class MainCommandsLoader(CLICommandsLoader):
 
     # pylint: disable=too-many-statements, too-many-locals
     def load_command_table(self, args):
-        import traceback
-        from azure.cli.core.commands import (
-            _load_module_command_loader, _load_extension_command_loader, BLOCKED_MODS, ExtensionCommandSource)
-        from azure.cli.core.extension import (
-            get_extensions, get_extension_path, get_extension_modname)
-        from azure.cli.core.breaking_change import (
-            import_core_breaking_changes, import_module_breaking_changes, import_extension_breaking_changes)
-
-        def _wrap_suppress_extension_func(func, ext):
-            """ Wrapper method to handle centralization of log messages for extension filters """
-            res = func(ext)
-            should_suppress = res
-            reason = "Use --debug for more information."
-            if isinstance(res, tuple):
-                should_suppress, reason = res
-            suppress_types = (bool, type(None))
-            if not isinstance(should_suppress, suppress_types):
-                raise ValueError("Command module authoring error: "
-                                 "Valid extension suppression values are {} in {}".format(suppress_types, func))
-            if should_suppress:
-                logger.warning("Extension %s (%s) has been suppressed. %s",
-                               ext.name, ext.version, reason)
-                logger.debug("Extension %s (%s) suppressed from being loaded due "
-                             "to %s", ext.name, ext.version, func)
-            return should_suppress
-
-        def _get_extension_suppressions(mod_loaders):
-            res = []
-            for m in mod_loaders:
-                suppressions = getattr(m, 'suppress_extension', None)
-                if suppressions:
-                    suppressions = suppressions if isinstance(suppressions, list) else [suppressions]
-                    for sup in suppressions:
-                        if isinstance(sup, ModExtensionSuppress):
-                            res.append(sup)
-            return res
-
         # Clear the tables to make this method idempotent
         self.command_group_table.clear()
         self.command_table.clear()
@@ -143,7 +87,7 @@ class MainCommandsLoader(CLICommandsLoader):
                 # ALWAYS_LOADED_EXTENSIONS) don't expose a command, but hooks into handlers in CLI core
                 self._update_command_table_from_modules(args, index_modules)
                 # The index won't contain suppressed extensions
-                self._update_command_table_from_extensions([], index_extensions)
+                self._update_command_table_from_extensions(args, [], index_extensions)
 
                 logger.debug("Loaded %d groups, %d commands.", len(self.command_group_table), len(self.command_table))
                 from azure.cli.core.util import roughly_parse_command
@@ -196,7 +140,7 @@ class MainCommandsLoader(CLICommandsLoader):
         ext_suppressions = _get_extension_suppressions(self.loaders)
         # We always load extensions even if the appropriate module has been loaded
         # as an extension could override the commands already loaded.
-        self._update_command_table_from_extensions(ext_suppressions)
+        self._update_command_table_from_extensions(args, ext_suppressions)
         logger.debug("Loaded %d groups, %d commands.", len(self.command_group_table), len(self.command_table))
 
         if use_command_index:
