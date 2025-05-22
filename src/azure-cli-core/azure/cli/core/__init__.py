@@ -25,6 +25,8 @@ EXCLUDED_PARAMS = ['self', 'raw', 'polling', 'custom_headers', 'operation_config
                    'content_version', 'kwargs', 'client', 'no_wait']
 
 
+__version__ = '2.73.0'
+
 def _configure_knack():
     """Override consts defined in knack to make them Azure CLI-specific."""
 

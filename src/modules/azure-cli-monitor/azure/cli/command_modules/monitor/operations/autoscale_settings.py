@@ -11,13 +11,32 @@ from azure.cli.command_modules.monitor.actions import AAZCustomListArg
 from azure.cli.command_modules.monitor._autoscale_util import get_autoscale_default_profile
 from ..aaz.latest.monitor.autoscale import Create as _AutoScaleCreate, Update as _AutoScaleUpdate, \
     Show as _AutoScaleShow, List as _AutoScaleList
-from azure.cli.command_modules.network.custom import _convert_to_snake_case
 from azure.cli.core.azclierror import InvalidArgumentValueError
 
 logger = get_logger(__name__)
 
 
 DEFAULT_PROFILE_NAME = 'default'
+
+def _to_snake(s):
+    import re
+    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', s)
+
+    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+
+
+def _convert_to_snake_case(element):
+    if isinstance(element, dict):
+        ret = {}
+        for k, v in element.items():
+            ret[_to_snake(k)] = _convert_to_snake_case(v)
+
+        return ret
+
+    if isinstance(element, list):
+        return [_convert_to_snake_case(i) for i in element]
+
+    return element
 
 
 class AutoScaleCreate(_AutoScaleCreate):

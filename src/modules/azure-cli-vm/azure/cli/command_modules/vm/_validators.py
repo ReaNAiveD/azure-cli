@@ -2668,3 +2668,14 @@ def _validate_community_gallery_legal_agreement_acceptance(cmd, namespace):
     if not prompt_y_n(msg, default="y"):
         import sys
         sys.exit(0)
+
+
+def validate_metric_dimension(namespace):
+
+    if not namespace.dimension:
+        return
+
+    if namespace.filters:
+        raise CLIError('usage: --dimension and --filter parameters are mutually exclusive.')
+
+    namespace.filters = ' and '.join("{} eq '*'".format(d) for d in namespace.dimension)

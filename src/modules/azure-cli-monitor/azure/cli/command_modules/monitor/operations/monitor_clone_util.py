@@ -7,8 +7,7 @@ from knack.log import get_logger
 from knack.util import CLIError
 from azure.mgmt.core.tools import parse_resource_id
 from azure.cli.core.commands.transform import _parse_id
-from azure.cli.command_modules.network.custom import _convert_to_snake_case
-from azure.cli.command_modules.monitor.util import gen_guid
+from azure.cli.command_modules.monitor.util import _convert_to_snake_case, gen_guid
 
 logger = get_logger(__name__)
 CLONED_NAME = "cloned-{}-{}"

@@ -5,16 +5,16 @@
 
 import sys
 from azure.cli.core import get_default_cli
-from azure.cli.command_modules.vm import ComputeCommandsLoader
+from azure.cli.command_modules.monitor import MonitorCommandsLoader
 
 
 try:
     from importlib.metadata import version
 
     cli = get_default_cli(
-        cli_name='az-vm',
-        version=version('azure-cli-vm'),
-        commands_loader_cls=ComputeCommandsLoader,
+        cli_name='az-monitor',
+        version=version('azure-cli-monitor'),
+        commands_loader_cls=MonitorCommandsLoader,
     )
 
     exit_code = cli.invoke(sys.argv[1:])

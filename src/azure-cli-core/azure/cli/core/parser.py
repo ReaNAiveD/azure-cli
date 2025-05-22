@@ -94,14 +94,16 @@ class AzCliCommandParser(CLICommandParser):
             # inject command_module designer's help formatter -- default is HelpFormatter
             fc = metadata.formatter_class or argparse.HelpFormatter
 
-            command_parser = subparser.add_parser(command_verb,
-                                                  description=metadata.description,
-                                                  parents=self.parents,
-                                                  conflict_handler='error',
-                                                  help_file=metadata.help,
-                                                  formatter_class=fc,
-                                                  cli_help=self.cli_help,
-                                                  _command_source=metadata.command_source)
+            command_parser = subparser.add_parser(
+                command_verb,
+                description=metadata.description,
+                parents=self.parents,
+                conflict_handler='error',
+                help_file=metadata.help,
+                formatter_class=fc,
+                cli_help=self.cli_help,
+                # _command_source=metadata.command_source,
+                )
             self.subparser_map[command_name] = command_parser
             command_parser.cli_ctx = self.cli_ctx
             command_validator = metadata.validator

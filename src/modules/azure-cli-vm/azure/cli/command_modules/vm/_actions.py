@@ -323,3 +323,43 @@ def _get_latest_image_version(cli_ctx, location, publisher, offer, sku, edge_zon
         if not top_one:
             raise InvalidArgumentValueError("Can't resolve the version of '{}:{}:{}'".format(publisher, offer, sku))
     return top_one[0].name
+
+
+def get_period_type(as_timedelta=False):
+
+    def period_type(value):
+
+        import re
+
+        def _get_substring(indices):
+            if indices == tuple([-1, -1]):
+                return ''
+            return value[indices[0]: indices[1]]
+
+        regex = r'(p)?(\d+y)?(\d+m)?(\d+d)?(t)?(\d+h)?(\d+m)?(\d+s)?'
+        match = re.match(regex, value.lower())
+        match_len = match.span(0)
+        if match_len != tuple([0, len(value)]):
+            raise ValueError('PERIOD should be of the form "##h##m##s" or ISO8601')
+        # simply return value if a valid ISO8601 string is supplied
+        if match.span(1) != tuple([-1, -1]) and match.span(5) != tuple([-1, -1]):
+            return value
+
+        # if shorthand is used, only support days, minutes, hours, seconds
+        # ensure M is interpretted as minutes
+        days = _get_substring(match.span(4))
+        hours = _get_substring(match.span(6))
+        minutes = _get_substring(match.span(7)) or _get_substring(match.span(3))
+        seconds = _get_substring(match.span(8))
+
+        if as_timedelta:
+            from datetime import timedelta
+            return timedelta(
+                days=int(days[:-1]) if days else 0,
+                hours=int(hours[:-1]) if hours else 0,
+                minutes=int(minutes[:-1]) if minutes else 0,
+                seconds=int(seconds[:-1]) if seconds else 0
+            )
+        return 'P{}T{}{}{}'.format(days, minutes, hours, seconds).upper()
+
+    return period_type

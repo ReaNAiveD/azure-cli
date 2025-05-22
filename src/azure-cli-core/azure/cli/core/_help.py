@@ -157,7 +157,7 @@ class AzCliHelp(CLIPrintMixin, CLIHelp):
         self._name_to_content = {}
 
     def show_help(self, cli_name, nouns, parser, is_group):
-        self.update_loaders_with_help_file_contents(nouns)
+        # self.update_loaders_with_help_file_contents(nouns)
 
         delimiters = ' '.join(nouns)
         help_file = self.command_help_cls(self, delimiters, parser) if not is_group \

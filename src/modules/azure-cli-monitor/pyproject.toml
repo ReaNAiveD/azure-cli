@@ -1,12 +1,11 @@
 [project]
-name = "azure-cli"
+name = "azure-cli-monitor"
 version = "2.73.0"
-description = "Microsoft Azure Command-Line Tools"
+description = "Microsoft Azure Command-Line Tools Monitor Module"
 authors = [
     { name = "Microsoft Corporation", email = "azpycli@microsoft.com" }
 ]
 license = "MIT"
-readme = "README.rst"
 requires-python = ">=3.9.0"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -17,11 +16,12 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "License :: OSI Approved :: MIT License"
+    "Programming Language :: Python :: 3.12"
 ]
 dependencies = [
-    "azure-cli-core~=2.73.0",
+    "antlr4-python3-runtime~=4.13.1",
+    "azure-cli-core==2.73.0",
+    'azure-mgmt-monitor~=7.0.0b1',
 ]
 
 [project.urls]

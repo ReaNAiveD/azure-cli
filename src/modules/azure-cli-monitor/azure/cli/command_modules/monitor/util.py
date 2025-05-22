@@ -47,3 +47,25 @@ def gen_guid():
     import uuid
     return uuid.uuid4()
 # endregion
+
+
+# add delegation name server record for the created child zone in it's parent zone.
+def _to_snake(s):
+    import re
+    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', s)
+
+    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+
+
+def _convert_to_snake_case(element):
+    if isinstance(element, dict):
+        ret = {}
+        for k, v in element.items():
+            ret[_to_snake(k)] = _convert_to_snake_case(v)
+
+        return ret
+
+    if isinstance(element, list):
+        return [_convert_to_snake_case(i) for i in element]
+
+    return element

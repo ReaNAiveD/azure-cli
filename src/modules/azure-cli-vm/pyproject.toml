@@ -1,12 +1,11 @@
 [project]
 name = "azure-cli-vm"
-version = "2.0.65"
+version = "2.73.0"
 description = "Microsoft Azure Command-Line Tools VM Module"
 authors = [
     { name = "Microsoft Corporation", email = "azpycli@microsoft.com" }
 ]
-license = { text = "MIT" }
-readme = "README.rst"
+license = "MIT"
 requires-python = ">=3.9.0"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -17,10 +16,14 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "License :: OSI Approved :: MIT License"
+    "Programming Language :: Python :: 3.12"
 ]
 dependencies = [
+    "azure-cli-core=~2.73.0",
+    "azure-cli-monitor~=2.73.0",
+    'azure-mgmt-compute~=34.1.0',
+    'azure-mgmt-marketplaceordering==1.1.0',
+    'azure-monitor-query==1.2.0',
 ]
 
 [project.urls]

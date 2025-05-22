@@ -15,20 +15,17 @@ from azure.cli.core.commands.validators import (
 from azure.cli.core.commands.parameters import (
     get_location_type, get_resource_name_completion_list, tags_type, get_three_state_flag,
     file_type, get_enum_type, zone_type, zones_type)
-from azure.cli.command_modules.vm._actions import _resource_not_exists
+from azure.cli.command_modules.vm._actions import _resource_not_exists, get_period_type
 from azure.cli.command_modules.vm._completers import (
     get_urn_aliases_completion_list, get_vm_size_completion_list, get_vm_run_command_completion_list)
 from azure.cli.command_modules.vm._constants import COMPATIBLE_SECURITY_TYPE_VALUE
 from azure.cli.command_modules.vm._validators import (
     validate_nsg_name, validate_vm_nics, validate_vm_nic, validate_vmss_disk,
     validate_asg_names_or_ids, validate_keyvault, _validate_proximity_placement_group,
-    validate_vm_name_for_monitor_metrics)
+    validate_vm_name_for_monitor_metrics, validate_metric_dimension)
 
 from azure.cli.command_modules.vm._vm_utils import MSI_LOCAL_ID
 from azure.cli.command_modules.vm._image_builder import ScriptType
-
-from azure.cli.command_modules.monitor.validators import validate_metric_dimension
-from azure.cli.command_modules.monitor.actions import get_period_type
 
 
 # pylint: disable=too-many-statements, too-many-branches, too-many-locals, too-many-lines
