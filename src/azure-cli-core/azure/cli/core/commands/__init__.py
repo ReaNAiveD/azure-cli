@@ -1273,6 +1273,7 @@ class AzCommandGroup(CommandGroup):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.is_stale = True
+        return False
 
     def _check_stale(self):
         if self.is_stale:

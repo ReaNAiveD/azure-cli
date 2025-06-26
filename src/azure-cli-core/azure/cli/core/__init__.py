@@ -4,6 +4,8 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=line-too-long
 
+from contextlib import contextmanager
+from itertools import takewhile
 import os
 import sys
 import timeit
@@ -281,18 +283,18 @@ class AzCommandsLoader(CLICommandsLoader):  # pylint: disable=too-many-instance-
         operation_group = kwargs.get('operation_group', self.module_kwargs.get('operation_group', None))
         return get_sdk(self.cli_ctx, resource_type, *attr_args, mod='models', operation_group=operation_group)
 
-    def command_group(self, group_name, command_type=None, **kwargs):
+    def command_group(self, group_name, command_type=None, *, is_preview=False, is_experimental=False, **kwargs):
         if command_type:
             kwargs['command_type'] = command_type
         if 'deprecate_info' in kwargs:
             kwargs['deprecate_info'].target = group_name
-        if kwargs.get('is_preview', False):
+        if is_preview:
             kwargs['preview_info'] = PreviewItem(
                 cli_ctx=self.cli_ctx,
                 target=group_name,
                 object_type='command group'
             )
-        if kwargs.get('is_experimental', False):
+        if is_experimental:
             kwargs['experimental_info'] = ExperimentalItem(
                 cli_ctx=self.cli_ctx,
                 target=group_name,
@@ -416,6 +418,104 @@ class AzCommandsLoader(CLICommandsLoader):  # pylint: disable=too-many-instance-
             return op.__func__
         except (ValueError, AttributeError):
             raise ValueError("The operation '{}' is invalid.".format(operation))
+
+
+class NoopCommandGroup:
+    def __init__(self, command_loader, group_name, **kwargs):
+        self.command_loader = command_loader
+        self.group_name = group_name
+        self.kwargs = kwargs
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        return False
+
+    def command(self, name, handler_name=None, **kwargs):
+        pass
+
+    def custom_command(self, name, method_name=None, **kwargs):
+        pass
+
+    def generic_update_command(self, name, getter_name='get', getter_type=None,
+                               setter_name='create_or_update', setter_type=None, setter_arg_name='parameters',
+                               child_collection_prop_name=None, child_collection_key='name', child_arg_name='item_name',
+                               custom_func_name=None, custom_func_type=None, **kwargs):
+        pass
+
+    def wait_command(self, name, getter_name='get', **kwargs):
+        pass
+
+    def custom_wait_command(self, name, getter_name='get', **kwargs):
+        pass
+
+    def generic_wait_command(self, name, getter_name='get', getter_type=None, **kwargs):
+        pass
+
+    def show_command(self, name, getter_name='get', **kwargs):
+        pass
+
+    def custom_show_command(self, name, getter_name='get', **kwargs):
+        pass
+
+    def command(self, name, handler_name, **kwargs):
+        pass
+    
+    def sensitive(self, **kwargs):
+        return None
+    
+    def deprecate(self, **kwargs):
+        return None
+
+
+class AzCommandsFilteredLoader(AzCommandsLoader):
+    def __init__(self, cli_ctx=None, command_group_cls=None, argument_context_cls=None,
+                 suppress_extension=None, **kwargs):
+        super().__init__(
+            cli_ctx=cli_ctx,
+            command_group_cls=command_group_cls,
+            argument_context_cls=argument_context_cls,
+            suppress_extension=suppress_extension,
+            **kwargs)
+        self.command_table = {}
+        self._sig = None
+        self._all_children = False
+    
+    def add_cli_command(self, name, command_operation, **kwargs):
+        if self._sig and not name.startswith(self._sig):
+            return
+        if self._sig and not self._all_children and name[len(self._sig):].count(' ') > 1:
+            return
+        super().add_cli_command(
+            name=name,
+            command_operation=command_operation,
+            **kwargs
+        )
+    
+    def command_group(self, group_name, command_type=None, *, is_preview=False, is_experimental=False, **kwargs):
+        if self._sig and not group_name.startswith(self._sig):
+            return NoopCommandGroup(self, group_name, **kwargs)
+        if self._sig and not self._all_children and group_name[len(self._sig):].count(' ') > 1:
+            return NoopCommandGroup(self, group_name, **kwargs)
+        return super().command_group(
+            group_name=group_name,
+            command_type=command_type,
+            is_preview=is_preview,
+            is_experimental=is_experimental,
+            **kwargs
+        )
+
+    @contextmanager
+    def filter(self, *, args=None, all_children=False):
+        if args:
+            self._sig = ''.join(takewhile(lambda x: not x.startswith('-'), args))
+            self._all_children = all_children
+        try:
+            yield
+        finally:
+            self._sig = None
+            self._all_children = False
 
 
 def get_default_cli(

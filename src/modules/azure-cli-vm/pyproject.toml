@@ -19,15 +19,21 @@ classifiers = [
     "Programming Language :: Python :: 3.12"
 ]
 dependencies = [
-    "azure-cli-core=~2.73.0",
+    "azure-cli-core~=2.73.0",
     "azure-cli-monitor~=2.73.0",
-    'azure-mgmt-compute~=34.1.0',
-    'azure-mgmt-marketplaceordering==1.1.0',
-    'azure-monitor-query==1.2.0',
+    "azure-mgmt-compute~=34.1.0",
+    "azure-mgmt-marketplaceordering==1.1.0",
+    "azure-monitor-query==1.2.0"
 ]
 
 [project.urls]
 Homepage = "https://github.com/Azure/azure-cli"
+
+[tool.setuptools]
+zip-safe = false
+packages = [
+    "azure.cli.command_modules.vm"
+]
 
 [build-system]
 requires = ["setuptools>=65.5.1", "wheel"]

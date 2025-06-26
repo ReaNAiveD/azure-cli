@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
 
-from azure.cli.core import AzCommandsLoader
+from azure.cli.core import AzCommandsFilteredLoader
 from azure.cli.core.commands import AzArgumentContext, CliCommandType
 
 from azure.cli.command_modules.monitor._help import helps  # pylint: disable=unused-import
@@ -29,7 +29,7 @@ class MonitorArgumentContext(AzArgumentContext):
         self.extra('resource_group_name', options_list=['--resource-group', '-g'], arg_group=arg_group)
 
 
-class MonitorCommandsLoader(AzCommandsLoader):
+class MonitorCommandsLoader(AzCommandsFilteredLoader):
 
     def __init__(self, cli_ctx=None):
         from azure.cli.core.profiles import ResourceType
@@ -41,6 +41,7 @@ class MonitorCommandsLoader(AzCommandsLoader):
                          custom_command_type=monitor_custom)
 
     def load_command_table(self, args):
+        # with self.filter(args=args):
         from azure.cli.command_modules.monitor.commands import load_command_table
         from azure.cli.core.aaz import load_aaz_command_table
         try:
