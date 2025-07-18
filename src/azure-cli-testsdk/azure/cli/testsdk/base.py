@@ -23,6 +23,7 @@ from .patches import (patch_load_cached_subscriptions, patch_main_exception_hand
                       patch_retrieve_token_for_user, patch_long_run_operation_delay,
                       patch_progress_controller, patch_get_current_system_username)
 from .exceptions import CliExecutionError
+from .scenario_tests.recording_processors import CommandRequestRecorder
 from .utilities import (find_recording_dir, StorageAccountKeyReplacer, GraphClientPasswordReplacer,
                         MSGraphClientPasswordReplacer, AADAuthRequestFilter, EmailAddressReplacer)
 from .reverse_dependency import get_dummy_cli
@@ -83,6 +84,7 @@ class ScenarioTest(ReplayableTest, CheckerMixin, unittest.TestCase):
     def __init__(self, method_name, config_file=None, recording_name=None,
                  recording_processors=None, replay_processors=None, recording_patches=None, replay_patches=None,
                  random_config_dir=False):
+        self.recording_name = recording_name or method_name
         self.cli_ctx = get_dummy_cli(random_config_dir=random_config_dir)
         self.random_config_dir = random_config_dir
         self.name_replacer = GeneralNameReplacer()
@@ -101,10 +103,12 @@ class ScenarioTest(ReplayableTest, CheckerMixin, unittest.TestCase):
             self.name_replacer
         ] + self._processors_to_reset
 
+        self.command_recorder = CommandRequestRecorder()
         default_replay_processors = [
             LargeResponseBodyReplacer(),
             DeploymentNameReplacer(),
             RequestUrlNormalizer(),
+            self.command_recorder,
         ]
 
         default_recording_patches = [patch_main_exception_handler]
@@ -117,6 +121,7 @@ class ScenarioTest(ReplayableTest, CheckerMixin, unittest.TestCase):
             patch_retrieve_token_for_user,
             patch_progress_controller,
         ]
+        self.recording_dir = find_recording_dir(inspect.getfile(self.__class__))
 
         def _merge_lists(base, patches):
             merged = list(base)
@@ -133,11 +138,12 @@ class ScenarioTest(ReplayableTest, CheckerMixin, unittest.TestCase):
             replay_processors=_merge_lists(default_replay_processors, replay_processors),
             recording_patches=_merge_lists(default_recording_patches, recording_patches),
             replay_patches=_merge_lists(default_replay_patches, replay_patches),
-            recording_dir=find_recording_dir(inspect.getfile(self.__class__)),
+            recording_dir=self.recording_dir,
             recording_name=recording_name
         )
 
     def tearDown(self):
+        self.command_recorder.dump(os.path.join(self.recording_dir, f'{self.recording_name}.commands.yaml'))
         for processor in self._processors_to_reset:
             processor.reset()
         if self.random_config_dir:
@@ -174,7 +180,9 @@ class ScenarioTest(ReplayableTest, CheckerMixin, unittest.TestCase):
 
     def cmd(self, command, checks=None, expect_failure=False):
         command = self._apply_kwargs(command)
-        return execute(self.cli_ctx, command, expect_failure=expect_failure).assert_with_checks(checks)
+        result = execute(self.cli_ctx, command, expect_failure=expect_failure).assert_with_checks(checks)
+        self.command_recorder.finish_command(command)
+        return result
 
     def get_subscription_id(self):
         if self.in_recording or self.is_live:

@@ -2,6 +2,9 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See License.txt in the project root for license information.
 # --------------------------------------------------------------------------------------------
+import threading
+
+import yaml
 
 from .utilities import is_text_payload, is_json_payload
 
@@ -224,3 +227,24 @@ class ContentLengthProcessor(RecordingProcessor):
         if is_text_payload(response) and response['body']['string'] and 'content-length' in response['headers']:
             response['headers']['content-length'][0] = str(len(response['body']['string']))
         return response
+
+
+class CommandRequestRecorder(RecordingProcessor):
+    def __init__(self):
+        self.cur_requests = []
+        self.commands = []
+
+    def process_request(self, request):
+        self.cur_requests.append(request)
+        return request
+
+    def finish_command(self, command):
+        self.commands.append({
+            'command': command,
+            'requests': self.cur_requests,
+        })
+        self.cur_requests = []
+
+    def dump(self, path):
+        with open(path, 'w', encoding='utf-8') as f:
+            yaml.dump(self.commands, f, allow_unicode=True)
