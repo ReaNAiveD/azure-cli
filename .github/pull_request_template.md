@@ -13,6 +13,21 @@
 [Component Name 1] BREAKING CHANGE: `az command a`: Make some customer-facing breaking change
 [Component Name 2] `az command b`: Add some customer-facing feature
 
+**Breaking Change Migration Guidelines**
+<!--If your PR is a breaking change, please provide the migration guidelines for customers.-->
+
+**Description:** Make sure that the description is clear and concise, explaining the purpose of the Breaking Change and how it affects users.
+**Recommended Actions:** Provide clear instructions on how users can migrate to the new behavior or API.
+**Previous Example:** If applicable, provide an example of the previous behavior or API that users were accustomed to.
+```bash
+// Example of the previous behavior
+```
+**New Example:** If applicable, provide an example of the new behavior or API that users should adopt.
+```bash
+// Example of the new behavior
+```
+**Links for more information:** If there are any relevant links, such as documentation or related issues, please include them here.
+
 ---
 
 This checklist is used to make sure that common guidelines for a pull request are followed.
@@ -22,3 +37,7 @@ This checklist is used to make sure that common guidelines for a pull request ar
 - [ ] I adhere to the [Command Guidelines](https://github.com/Azure/azure-cli/blob/dev/doc/command_guidelines.md).
 
 - [ ] I adhere to the [Error Handling Guidelines](https://github.com/Azure/azure-cli/blob/dev/doc/error_handling_guidelines.md).
+
+Only check the following items if breaking change is introduced.
+
+- [ ] I have announced the breaking change at least 1 month in advance and deleted the announcement in this PR.
