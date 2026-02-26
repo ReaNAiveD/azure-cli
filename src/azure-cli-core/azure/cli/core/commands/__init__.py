@@ -34,6 +34,7 @@ from azure.cli.core.commands.progress import IndeterminateProgressBar
 from knack.arguments import CLICommandArgument
 from knack.commands import CLICommand, CommandGroup, PREVIEW_EXPERIMENTAL_CONFLICT_ERROR
 from knack.deprecation import ImplicitDeprecated, resolve_deprecate_info, Deprecated
+from knack.introspection import extract_args_from_signature
 from knack.invocation import CommandInvoker
 from knack.preview import ImplicitPreviewItem, PreviewItem, resolve_preview_info
 from knack.experimental import ImplicitExperimentalItem, ExperimentalItem, resolve_experimental_info
@@ -381,6 +382,46 @@ class AzCliCommand(CLICommand):
                 elif value is not None:
                     setattr(curr_obj, prop, value)
         return UpdateContext(obj_inst)
+
+
+class OperationCommand(AzCliCommand):
+    """Class-Based Command"""
+    AZ_NAME = None
+    AZ_HELP = None
+    AZ_SUPPORT_NO_WAIT = False
+    AZ_SUPPORT_GENERIC_UPDATE = False
+    AZ_SUPPORT_PAGINATION = False
+
+    AZ_CONFIRMATION = None
+    AZ_PREVIEW_INFO = None
+    AZ_EXPERIMENTAL_INFO = None
+    AZ_DEPRECATE_INFO = None
+
+    def __init__(self, loader, description=None, table_transformer=None,
+                 arguments_loader=None, description_loader=None,
+                 formatter_class=None, sensitive_info=None, deprecate_info=None, validator=None, **kwargs):
+        super().__init__(loader, name=None, handler=True, description=description,
+                         table_transformer=table_transformer, arguments_loader=arguments_loader,
+                         description_loader=description_loader, formatter_class=formatter_class,
+                         sensitive_info=sensitive_info, deprecate_info=deprecate_info, validator=validator,
+                         **kwargs)
+
+    def load_arguments(self):
+        cmd_args = extract_args_from_signature(self.__call__)
+        if self.supports_no_wait or self.no_wait_param:
+            if self.supports_no_wait:
+                no_wait_param_dest = 'no_wait'
+            elif self.no_wait_param:
+                no_wait_param_dest = self.no_wait_param
+            cmd_args.append(
+                (no_wait_param_dest,
+                    CLICommandArgument(no_wait_param_dest, options_list=['--no-wait'], action='store_true',
+                                    help='Do not wait for the long-running operation to finish.')))
+        if self.confirmation:
+            cmd_args.append(('yes',
+                                CLICommandArgument(dest='yes', options_list=['--yes', '-y'],
+                                                action='store_true', help='Do not prompt for confirmation.')))
+        self.arguments.update(cmd_args)
 
 
 def _is_stale(cli_ctx, cache_obj):
