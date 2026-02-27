@@ -400,23 +400,32 @@ class OperationCommand(AzCliCommand):
     def __init__(self, loader, description=None, table_transformer=None,
                  arguments_loader=None, description_loader=None,
                  formatter_class=None, sensitive_info=None, deprecate_info=None, validator=None, **kwargs):
-        super().__init__(loader, name=None, handler=True, description=description,
+        super().__init__(loader, description=description,
                          table_transformer=table_transformer, arguments_loader=arguments_loader,
                          description_loader=description_loader, formatter_class=formatter_class,
                          sensitive_info=sensitive_info, deprecate_info=deprecate_info, validator=validator,
                          **kwargs)
 
+    def handle(self, *args, **kwargs):
+        raise NotImplementedError("OperationCommand is a base class for class-based commands. "
+                                  "Please implement the 'handle' method in the subclass.")
+
+    def __call__(self, command_params):
+        return self.handle(**command_params)
+
     def load_arguments(self):
-        cmd_args = extract_args_from_signature(self.__call__)
+        cmd_args = list(extract_args_from_signature(self.handle))
         if self.supports_no_wait or self.no_wait_param:
+            no_wait_param_dest = None
             if self.supports_no_wait:
                 no_wait_param_dest = 'no_wait'
             elif self.no_wait_param:
                 no_wait_param_dest = self.no_wait_param
-            cmd_args.append(
-                (no_wait_param_dest,
-                    CLICommandArgument(no_wait_param_dest, options_list=['--no-wait'], action='store_true',
-                                    help='Do not wait for the long-running operation to finish.')))
+            if no_wait_param_dest:
+                cmd_args.append(
+                    (no_wait_param_dest,
+                        CLICommandArgument(no_wait_param_dest, options_list=['--no-wait'], action='store_true',
+                                        help='Do not wait for the long-running operation to finish.')))
         if self.confirmation:
             cmd_args.append(('yes',
                                 CLICommandArgument(dest='yes', options_list=['--yes', '-y'],

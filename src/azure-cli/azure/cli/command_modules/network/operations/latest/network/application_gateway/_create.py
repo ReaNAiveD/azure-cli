@@ -39,7 +39,7 @@ class ApplicationGatewayCreate(OperationCommand):
             loader=loader,
             name=self.AZ_NAME,
             handler=True,
-            transform=DeploymentOutputLongRunningOperation(self.cli_ctx),
+            transform=DeploymentOutputLongRunningOperation(loader.cli_ctx),
             supports_no_wait=True,
             table_transformer=deployment_validate_table_format,
             validator=process_ag_create_namespace,
@@ -47,7 +47,7 @@ class ApplicationGatewayCreate(OperationCommand):
             **kwargs
         )
 
-    def __call__(self, cmd, application_gateway_name, resource_group_name, location=None,
+    def handle(self, cmd, application_gateway_name, resource_group_name, location=None,
                 tags=None, no_wait=False, capacity=2,
                 cert_data=None, cert_password=None, key_vault_secret_id=None,
                 frontend_port=None, http_settings_cookie_based_affinity='disabled',
@@ -169,4 +169,3 @@ class ApplicationGatewayCreate(OperationCommand):
             return client.validate(resource_group_name, deployment_name, deployment)
 
         return sdk_no_wait(no_wait, client.begin_create_or_update, resource_group_name, deployment_name, deployment)
-
