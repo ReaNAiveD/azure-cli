@@ -1,12 +1,19 @@
+from knack.arguments import CLIArgumentType
+
+from azure.cli.core import LocalContextAction
+from azure.cli.core.commands.parameters import get_resource_name_completion_list, get_location_type, tags_type, \
+    get_enum_type, zones_type
+from azure.cli.core.commands.validators import get_default_location_from_resource_group
+from azure.cli.core.local_context import LocalContextAttribute
 from azure.cli.core.util import sdk_no_wait
 from azure.cli.core.aaz import register_command
-from azure.cli.core.commands import CLICommandArgument, DeploymentOutputLongRunningOperation, OperationCommand
+from azure.cli.core.commands import DeploymentOutputLongRunningOperation, OperationCommand
 from azure.cli.core.commands.arm import (
     ResourceType, deployment_validate_table_format, handle_template_based_exception)
 from azure.cli.core.commands.client_factory import get_subscription_id, get_mgmt_service_client
-from azure.cli.command_modules.network._validators import process_ag_create_namespace
-from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id, resource_id
-from knack.introspection import extract_args_from_signature
+from azure.cli.command_modules.network._validators import process_ag_create_namespace, validate_private_ip_address, \
+    validate_custom_error_pages, validate_waf_policy
+from azure.mgmt.core.tools import is_valid_resource_id, resource_id
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -27,9 +34,6 @@ def _is_v2_sku(sku):
     "network application-gateway create",
 )
 class ApplicationGatewayCreate(OperationCommand):
-    AZ_NAME = None
-    AZ_CONFIRMATION = False
-
     def __init__(self, loader, **kwargs):
         """
         :param loader: it is required for command registered in the command table
@@ -46,6 +50,26 @@ class ApplicationGatewayCreate(OperationCommand):
             exception_handler=handle_template_based_exception,
             **kwargs
         )
+
+    def register_arguments(self, arg_ctx):
+        virtual_network_name_type = CLIArgumentType(options_list='--vnet-name', metavar='NAME', help='The virtual network (VNet) name.', completer=get_resource_name_completion_list('Microsoft.Network/virtualNetworks'),
+                                                    local_context_attribute=LocalContextAttribute(name='vnet_name', actions=[LocalContextAction.GET]))
+        private_ip_address_type = CLIArgumentType(help='Static private IP address to use.', validator=validate_private_ip_address)
+        app_gateway_name_type = CLIArgumentType(help='Name of the application gateway.', options_list='--gateway-name', completer=get_resource_name_completion_list('Microsoft.Network/applicationGateways'), id_part='name')
+        arg_ctx.argument('virtual_network_name', virtual_network_name_type, id_part='name')
+        arg_ctx.argument('tags', tags_type)
+        arg_ctx.argument('private_ip_address', private_ip_address_type)
+        arg_ctx.argument('location', get_location_type(self.cli_ctx), validator=get_default_location_from_resource_group)
+        arg_ctx.argument('application_gateway_name', app_gateway_name_type, options_list=['--name', '-n'])
+        skus = ["Standard_Small", "Standard_Medium", "WAF_Medium", "WAF_Large", "Standard_v2", "WAF_v2"]
+        arg_ctx.argument('sku', arg_group='Gateway', help='The name of the SKU.', arg_type=get_enum_type(skus), default="Standard_Medium")
+        arg_ctx.argument('min_capacity', help='Lower bound on the number of application gateway instances.', type=int)
+        arg_ctx.argument('max_capacity', help='Upper bound on the number of application gateway instances.', type=int)
+        arg_ctx.ignore('virtual_network_type', 'private_ip_address_allocation')
+        arg_ctx.argument('zones', zones_type)
+        arg_ctx.argument('custom_error_pages', nargs='+', help='Space-separated list of custom error pages in `STATUS_CODE=URL` format.', validator=validate_custom_error_pages)
+        arg_ctx.argument('firewall_policy', options_list='--waf-policy', help='Name or ID of a web application firewall (WAF) policy.', validator=validate_waf_policy)
+        arg_ctx.argument('priority', type=int, help='Priority of the request routing rule. Supported SKU tiers are Standard_v2, WAF_v2.')
 
     def handle(self, cmd, application_gateway_name, resource_group_name, location=None,
                 tags=None, no_wait=False, capacity=2,

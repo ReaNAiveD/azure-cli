@@ -31,7 +31,7 @@ from azure.cli.core.local_context import LocalContextAction
 from azure.cli.core import telemetry
 from azure.cli.core.commands.progress import IndeterminateProgressBar
 
-from knack.arguments import CLICommandArgument
+from knack.arguments import CLICommandArgument, CLIArgumentType, ignore_type
 from knack.commands import CLICommand, CommandGroup, PREVIEW_EXPERIMENTAL_CONFLICT_ERROR
 from knack.deprecation import ImplicitDeprecated, resolve_deprecate_info, Deprecated
 from knack.introspection import extract_args_from_signature
@@ -39,7 +39,7 @@ from knack.invocation import CommandInvoker
 from knack.preview import ImplicitPreviewItem, PreviewItem, resolve_preview_info
 from knack.experimental import ImplicitExperimentalItem, ExperimentalItem, resolve_experimental_info
 from knack.log import get_logger, CLILogging
-from knack.util import CLIError, CommandResultItem
+from knack.util import CLIError, CommandResultItem, status_tag_messages
 from knack.events import EVENT_INVOKER_TRANSFORM_RESULT
 from knack.validators import DefaultStr
 
@@ -384,6 +384,293 @@ class AzCliCommand(CLICommand):
         return UpdateContext(obj_inst)
 
 
+class CommandArgumentsContext:
+    def __init__(self, cli_ctx, command):
+        self.cli_ctx = cli_ctx
+        self.command = command  # type: AzCliCommand
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass
+
+    def _get_parent_class(self, **kwargs):
+        # wrap any existing action
+        action = kwargs.get('action', None)
+        parent_class = argparse.Action
+
+        # action is either a user-defined Action class or a string referring a library-defined Action
+        if isinstance(action, type) and issubclass(action, argparse.Action):
+            parent_class = action
+        elif isinstance(action, str):
+            parent_class = self.cli_ctx.invocation.parser._registries['action'][action]  # pylint: disable=protected-access
+        return parent_class
+
+    def _handle_deprecations(self, argument_dest, **kwargs):
+
+        def _handle_argument_deprecation(deprecate_info):
+
+            parent_class = self._get_parent_class(**kwargs)
+
+            class DeprecatedArgumentAction(parent_class):
+
+                def __call__(self, parser, namespace, values, option_string=None):
+                    if not hasattr(namespace, '_argument_deprecations'):
+                        setattr(namespace, '_argument_deprecations', [deprecate_info])
+                    else:
+                        namespace._argument_deprecations.append(deprecate_info)  # pylint: disable=protected-access
+                    try:
+                        super().__call__(parser, namespace, values, option_string)
+                    except NotImplementedError:
+                        setattr(namespace, self.dest, values)
+
+            return DeprecatedArgumentAction
+
+        def _handle_option_deprecation(deprecated_options):
+
+            if not isinstance(deprecated_options, list):
+                deprecated_options = [deprecated_options]
+
+            parent_class = self._get_parent_class(**kwargs)
+
+            class DeprecatedOptionAction(parent_class):
+
+                def __call__(self, parser, namespace, values, option_string=None):
+                    deprecated_opt = next((x for x in deprecated_options if option_string == x.target), None)
+                    if deprecated_opt:
+                        if not hasattr(namespace, '_argument_deprecations'):
+                            setattr(namespace, '_argument_deprecations', [deprecated_opt])
+                        else:
+                            namespace._argument_deprecations.append(deprecated_opt)  # pylint: disable=protected-access
+                    try:
+                        super().__call__(parser, namespace, values, option_string)
+                    except NotImplementedError:
+                        setattr(namespace, self.dest, values)
+
+            return DeprecatedOptionAction
+
+        action = kwargs.get('action', None)
+
+        deprecate_info = kwargs.get('deprecate_info', None)
+        if deprecate_info:
+            deprecate_info.target = deprecate_info.target or argument_dest
+            action = _handle_argument_deprecation(deprecate_info)
+        deprecated_opts = [x for x in kwargs.get('options_list', []) if isinstance(x, Deprecated)]
+        if deprecated_opts:
+            action = _handle_option_deprecation(deprecated_opts)
+        return action
+
+    def _handle_previews(self, argument_dest, **kwargs):
+
+        if not kwargs.get('is_preview', False):
+            return kwargs
+
+        def _handle_argument_preview(preview_info):
+
+            parent_class = self._get_parent_class(**kwargs)
+
+            class PreviewArgumentAction(parent_class):
+
+                def __call__(self, parser, namespace, values, option_string=None):
+                    if not hasattr(namespace, '_argument_previews'):
+                        setattr(namespace, '_argument_previews', [preview_info])
+                    else:
+                        namespace._argument_previews.append(preview_info)  # pylint: disable=protected-access
+                    try:
+                        super().__call__(parser, namespace, values, option_string)
+                    except NotImplementedError:
+                        setattr(namespace, self.dest, values)
+
+            return PreviewArgumentAction
+
+        def _get_preview_arg_message(self):
+            # "Argument xxx"
+            subject = "{} '{}'".format(self.object_type.capitalize(), self.target)
+            return status_tag_messages['preview'].format(subject)
+
+        options_list = kwargs.get('options_list', None)
+        object_type = 'argument'
+
+        if options_list is None:
+            # convert argument dest
+            target = '--{}'.format(argument_dest.replace('_', '-'))
+        elif options_list:
+            target = sorted(options_list, key=len)[-1]
+        else:
+            # positional argument
+            target = kwargs.get('metavar', '<{}>'.format(argument_dest.upper()))
+            object_type = 'positional argument'
+
+        preview_info = PreviewItem(
+            cli_ctx=self.cli_ctx,
+            target=target,
+            object_type=object_type,
+            message_func=_get_preview_arg_message
+        )
+        kwargs['preview_info'] = preview_info
+        kwargs['action'] = _handle_argument_preview(preview_info)
+        return kwargs
+
+    def _handle_experimentals(self, argument_dest, **kwargs):
+
+        if not kwargs.get('is_experimental', False):
+            return kwargs
+
+        def _handle_argument_experimental(experimental_info):
+
+            parent_class = self._get_parent_class(**kwargs)
+
+            class ExperimentalArgumentAction(parent_class):
+
+                def __call__(self, parser, namespace, values, option_string=None):
+                    if not hasattr(namespace, '_argument_experimentals'):
+                        setattr(namespace, '_argument_experimentals', [experimental_info])
+                    else:
+                        namespace._argument_experimentals.append(experimental_info)  # pylint: disable=protected-access
+                    try:
+                        super().__call__(parser, namespace, values, option_string)
+                    except NotImplementedError:
+                        setattr(namespace, self.dest, values)
+
+            return ExperimentalArgumentAction
+
+        def _get_experimental_arg_message(self):
+            # "Argument xxx"
+            subject = "{} '{}'".format(self.object_type.capitalize(), self.target)
+            return status_tag_messages['experimental'].format(subject)
+
+        options_list = kwargs.get('options_list', None)
+        object_type = 'argument'
+
+        if options_list is None:
+            # convert argument dest
+            target = '--{}'.format(argument_dest.replace('_', '-'))
+        elif options_list:
+            target = sorted(options_list, key=len)[-1]
+        else:
+            # positional argument
+            target = kwargs.get('metavar', '<{}>'.format(argument_dest.upper()))
+            object_type = 'positional argument'
+
+        experimental_info = ExperimentalItem(
+            self.cli_ctx,
+            target=target,
+            object_type=object_type,
+            message_func=_get_experimental_arg_message
+        )
+        kwargs['experimental_info'] = experimental_info
+        kwargs['action'] = _handle_argument_experimental(experimental_info)
+        return kwargs
+
+    # pylint: disable=inconsistent-return-statements
+    def deprecate(self, **kwargs):
+
+        def _get_deprecated_arg_message(self):
+            msg = "{} '{}' has been deprecated and will be removed ".format(
+                self.object_type, self.target).capitalize()
+            if self.expiration:
+                msg += "in version '{}'.".format(self.expiration)
+            else:
+                msg += 'in a future release.'
+            if self.redirect:
+                msg += " Use '{}' instead.".format(self.redirect)
+            return msg
+
+        target = kwargs.get('target', '')
+        kwargs['object_type'] = 'option' if target.startswith('-') else 'argument'
+        kwargs['message_func'] = _get_deprecated_arg_message
+        return Deprecated(self.cli_ctx, **kwargs)
+
+    def argument(self, argument_dest, arg_type=None, **kwargs):
+        """ Register an argument for the given command scope using a knack.arguments.CLIArgumentType
+
+        :param argument_dest: The destination argument to add this argument type to
+        :type argument_dest: str
+        :param arg_type: Predefined CLIArgumentType definition to register, as modified by any provided kwargs.
+        :type arg_type: knack.arguments.CLIArgumentType
+        :param kwargs: Possible values: `options_list`, `validator`, `completer`, `nargs`, `action`, `const`, `default`,
+                       `type`, `choices`, `required`, `help`, `metavar`, `is_preview`, `is_experimental`,
+                       `deprecate_info`. See /docs/arguments.md.
+        """
+        deprecate_action = self._handle_deprecations(argument_dest, **kwargs)
+        if deprecate_action:
+            kwargs['action'] = deprecate_action
+
+        is_preview = kwargs.get('is_preview', False)
+        is_experimental = kwargs.get('is_experimental', False)
+
+        if is_preview and is_experimental:
+            from knack.commands import PREVIEW_EXPERIMENTAL_CONFLICT_ERROR
+            raise CLIError(PREVIEW_EXPERIMENTAL_CONFLICT_ERROR.format('argument', argument_dest))
+
+        kwargs = self._handle_previews(argument_dest, **kwargs)
+        kwargs = self._handle_experimentals(argument_dest, **kwargs)
+
+        argument = CLIArgumentType(overrides=arg_type, **kwargs)
+        self.command.update_argument(argument_dest, argument)
+
+    def positional(self, argument_dest, arg_type=None, **kwargs):
+        """ Register a positional argument for the given command scope using a knack.arguments.CLIArgumentType
+
+        :param argument_dest: The destination argument to add this argument type to
+        :type argument_dest: str
+        :param arg_type: Predefined CLIArgumentType definition to register, as modified by any provided kwargs.
+        :type arg_type: knack.arguments.CLIArgumentType
+        :param kwargs: Possible values: `validator`, `completer`, `nargs`, `action`, `const`, `default`,
+                       `type`, `choices`, `required`, `help`, `metavar`, `is_preview`, `is_experimental`,
+                       `deprecate_info`. See /docs/arguments.md.
+        """
+        # Before adding the new positional arg, ensure that there are no existing positional arguments
+        # registered for this command.
+        positional_args = {k: v for k, v in self.command.arguments.items() if v.settings.get('options_list') == []}
+        if positional_args and argument_dest not in positional_args:
+            raise CLIError("command authoring error: commands may have, at most, one positional argument. '{}' already "
+                           "has positional argument: {}.".format(
+                self.command.name, ' '.join(positional_args.keys())))
+
+        kwargs['options_list'] = []
+
+        deprecate_action = self._handle_deprecations(argument_dest, **kwargs)
+        if deprecate_action:
+            kwargs['action'] = deprecate_action
+
+        kwargs = self._handle_previews(argument_dest, **kwargs)
+        kwargs = self._handle_experimentals(argument_dest, **kwargs)
+
+        argument = CLIArgumentType(overrides=arg_type, **kwargs)
+        self.command.update_argument(argument_dest, argument)
+
+    def ignore(self, argument_dest, **kwargs):
+        """ Register an argument with type knack.arguments.ignore_type (hidden/ignored)
+
+        :param argument_dest: The destination argument to apply the ignore type to
+        :type argument_dest: str
+        """
+        dest_option = ['--__{}'.format(argument_dest.upper())]
+        self.argument(argument_dest, arg_type=ignore_type, options_list=dest_option, **kwargs)
+
+    def extra(self, argument_dest, **kwargs):
+        """Register extra parameters for the given command. Typically used to augment auto-command built
+        commands to add more parameters than the specific SDK method introspected.
+
+        :param argument_dest: The destination argument to add this argument type to
+        :type argument_dest: str
+        :param kwargs: Possible values: `options_list`, `validator`, `completer`, `nargs`, `action`, `const`, `default`,
+                       `type`, `choices`, `required`, `help`, `metavar`, `is_preview`, `is_experimental`,
+                       `deprecate_info`. See /docs/arguments.md.
+        """
+        deprecate_action = self._handle_deprecations(argument_dest, **kwargs)
+        if deprecate_action:
+            kwargs['action'] = deprecate_action
+
+        kwargs = self._handle_previews(argument_dest, **kwargs)
+        kwargs = self._handle_experimentals(argument_dest, **kwargs)
+
+        argument = CLIArgumentType(**kwargs)
+        self.command.arguments[argument_dest] = argument
+
+
 class OperationCommand(AzCliCommand):
     """Class-Based Command"""
     AZ_NAME = None
@@ -431,6 +718,11 @@ class OperationCommand(AzCliCommand):
                                 CLICommandArgument(dest='yes', options_list=['--yes', '-y'],
                                                 action='store_true', help='Do not prompt for confirmation.')))
         self.arguments.update(cmd_args)
+        with CommandArgumentsContext(self.cli_ctx, self) as arg_ctx:
+            self.register_arguments(arg_ctx)
+
+    def register_arguments(self, arg_ctx):
+        pass
 
 
 def _is_stale(cli_ctx, cache_obj):
