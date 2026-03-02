@@ -25,6 +25,7 @@ from azure.cli.core.commands.constants import (
 from azure.cli.core.commands.parameters import (
     AzArgumentContext, patch_arg_make_required, patch_arg_make_optional)
 from azure.cli.core.extension import get_extension
+from azure.cli.core.profiles import supported_api_version
 from azure.cli.core.util import (
     get_command_type_kwarg, read_file_content, get_arg_list, poller_classes)
 from azure.cli.core.local_context import LocalContextAction
@@ -385,9 +386,10 @@ class AzCliCommand(CLICommand):
 
 
 class CommandArgumentsContext:
-    def __init__(self, cli_ctx, command):
+    def __init__(self, cli_ctx, command, **kwargs):
         self.cli_ctx = cli_ctx
         self.command = command  # type: AzCliCommand
+        self.group_kwargs = kwargs
 
     def __enter__(self):
         return self
@@ -582,6 +584,25 @@ class CommandArgumentsContext:
         kwargs['message_func'] = _get_deprecated_arg_message
         return Deprecated(self.cli_ctx, **kwargs)
 
+    def _ignore_if_not_registered(self, dest):
+        match = self.command.arguments.get(dest)
+        if not match:
+            self.ignore(dest)
+
+    def _supported_api_version(self, **kwargs):
+        min_api = kwargs.get('min_api', None)
+        max_api = kwargs.get('max_api', None)
+        if not min_api and not max_api:
+            return True
+        resource_type = kwargs.get('resource_type', None)
+        operation_group = kwargs.get('operation_group', None)
+        api_support = supported_api_version(resource_type=resource_type, min_api=min_api, max_api=max_api, operation_group=operation_group)
+        if isinstance(api_support, bool):
+            return api_support
+        if operation_group:
+            return getattr(api_support, operation_group)
+        return api_support
+
     def argument(self, argument_dest, arg_type=None, **kwargs):
         """ Register an argument for the given command scope using a knack.arguments.CLIArgumentType
 
@@ -593,6 +614,10 @@ class CommandArgumentsContext:
                        `type`, `choices`, `required`, `help`, `metavar`, `is_preview`, `is_experimental`,
                        `deprecate_info`. See /docs/arguments.md.
         """
+        if not self._supported_api_version(**kwargs):
+            self._ignore_if_not_registered(argument_dest)
+            return
+    
         deprecate_action = self._handle_deprecations(argument_dest, **kwargs)
         if deprecate_action:
             kwargs['action'] = deprecate_action
@@ -607,7 +632,7 @@ class CommandArgumentsContext:
         kwargs = self._handle_previews(argument_dest, **kwargs)
         kwargs = self._handle_experimentals(argument_dest, **kwargs)
 
-        argument = CLIArgumentType(overrides=arg_type, **kwargs)
+        argument = CLIArgumentType(overrides=arg_type, **kwargs, **self.group_kwargs)
         self.command.update_argument(argument_dest, argument)
 
     def positional(self, argument_dest, arg_type=None, **kwargs):
@@ -623,11 +648,12 @@ class CommandArgumentsContext:
         """
         # Before adding the new positional arg, ensure that there are no existing positional arguments
         # registered for this command.
-        positional_args = {k: v for k, v in self.command.arguments.items() if v.settings.get('options_list') == []}
-        if positional_args and argument_dest not in positional_args:
-            raise CLIError("command authoring error: commands may have, at most, one positional argument. '{}' already "
-                           "has positional argument: {}.".format(
-                self.command.name, ' '.join(positional_args.keys())))
+        kwargs = {k: v for k, v in kwargs.items() if k in CLI_POSITIONAL_PARAM_KWARGS}
+        kwargs['options_list'] = []
+
+        if not self._supported_api_version(**kwargs):
+            self._ignore_if_not_registered(argument_dest)
+            return
 
         kwargs['options_list'] = []
 
@@ -638,7 +664,7 @@ class CommandArgumentsContext:
         kwargs = self._handle_previews(argument_dest, **kwargs)
         kwargs = self._handle_experimentals(argument_dest, **kwargs)
 
-        argument = CLIArgumentType(overrides=arg_type, **kwargs)
+        argument = CLIArgumentType(overrides=arg_type, **kwargs, **self.group_kwargs)
         self.command.update_argument(argument_dest, argument)
 
     def ignore(self, argument_dest, **kwargs):
@@ -660,6 +686,8 @@ class CommandArgumentsContext:
                        `type`, `choices`, `required`, `help`, `metavar`, `is_preview`, `is_experimental`,
                        `deprecate_info`. See /docs/arguments.md.
         """
+        if not self._supported_api_version(**kwargs):
+            return
         deprecate_action = self._handle_deprecations(argument_dest, **kwargs)
         if deprecate_action:
             kwargs['action'] = deprecate_action
@@ -667,7 +695,7 @@ class CommandArgumentsContext:
         kwargs = self._handle_previews(argument_dest, **kwargs)
         kwargs = self._handle_experimentals(argument_dest, **kwargs)
 
-        argument = CLIArgumentType(**kwargs)
+        argument = CLIArgumentType(**kwargs, **self.group_kwargs)
         self.command.arguments[argument_dest] = argument
 
 
@@ -718,11 +746,9 @@ class OperationCommand(AzCliCommand):
                                 CLICommandArgument(dest='yes', options_list=['--yes', '-y'],
                                                 action='store_true', help='Do not prompt for confirmation.')))
         self.arguments.update(cmd_args)
-        with CommandArgumentsContext(self.cli_ctx, self) as arg_ctx:
-            self.register_arguments(arg_ctx)
 
-    def register_arguments(self, arg_ctx):
-        pass
+    def arguments_context(self, **kwargs):
+        return CommandArgumentsContext(self.cli_ctx, self, **kwargs)
 
 
 def _is_stale(cli_ctx, cache_obj):
