@@ -8,14 +8,11 @@ import base64
 import binascii
 import getpass
 import json
-import yaml
 import logging
 import os
 import platform
 import re
-import ssl
 import sys
-from urllib.request import urlopen
 
 from knack.log import get_logger
 from knack.util import CLIError, to_snake_case, to_camel_case
@@ -569,6 +566,7 @@ def get_file_json(file_path, throw_on_empty=True, preserve_order=False):
 
 
 def get_file_yaml(file_path, throw_on_empty=True):
+    import yaml  # Lazy-load: only needed when parsing YAML files
     content = read_file_content(file_path)
     if not content:
         if throw_on_empty:
@@ -803,8 +801,9 @@ def open_page_in_browser(url):
         try:
             # https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_powershell_exe
             # Ampersand (&) should be quoted
+            safe_url = url.replace("'", "''")
             return subprocess.Popen(
-                ['powershell.exe', '-NoProfile', '-Command', 'Start-Process "{}"'.format(url)]).wait()
+                ['powershell.exe', '-NoProfile', '-Command', f"Start-Process '{safe_url}'"]).wait()
         except OSError:  # WSL might be too old  # FileNotFoundError introduced in Python 3
             pass
     elif platform_name == 'darwin':
@@ -1199,10 +1198,12 @@ ConfiguredDefaultSetter = ScopedConfig
 
 
 def _ssl_context():
+    import ssl
     return ssl.create_default_context()
 
 
 def urlretrieve(url):
+    from urllib.request import urlopen
     req = urlopen(url, context=_ssl_context())
     return req.read()
 
