@@ -16,6 +16,7 @@ from knack.log import get_logger
 from knack.preview import PreviewItem
 
 from azure.cli.core.azclierror import CLIInternalError
+from azure.cli.core.commands import OperationCommand
 from ._arg import AAZArgumentsSchema, AAZBoolArg, \
     AAZGenericUpdateAddArg, AAZGenericUpdateSetArg, AAZGenericUpdateRemoveArg, AAZGenericUpdateForceStringArg, \
     AAZPaginationTokenArg, AAZPaginationLimitArg
@@ -359,7 +360,7 @@ def register_command(
         deprecated_info['expiration'] = expiration
 
     def decorator(cls):
-        assert issubclass(cls, AAZCommand)
+        assert issubclass(cls, AAZCommand) or issubclass(cls, OperationCommand)
         cls.AZ_NAME = name
         short_summary, long_summary, examples = _parse_cls_doc(cls)
         cls.AZ_HELP = {
@@ -458,6 +459,8 @@ def _register_from_module(loader, mod, command_table, command_group_table):
         if issubclass(value, AAZCommandGroup) and value.AZ_NAME:
             command_group_table[value.AZ_NAME] = value(cli_ctx=loader.cli_ctx)
         elif issubclass(value, AAZCommand) and value.AZ_NAME:
+            command_table[value.AZ_NAME] = value(loader=loader)
+        elif issubclass(value, OperationCommand) and value.AZ_NAME:
             command_table[value.AZ_NAME] = value(loader=loader)
 
 

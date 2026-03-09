@@ -128,30 +128,10 @@ def load_arguments(self, _):
     with self.argument_context('network application-gateway', arg_group='SSL Profile') as c:
         c.argument('ssl_profile', nargs='+', action=SslProfilesCreate, is_preview=True)
 
-    with self.argument_context('network application-gateway create') as c:
-        c.argument('validate', help='Generate and validate the ARM template without creating any resources.', action='store_true')
-        c.argument('routing_rule_type', arg_group='Gateway', help='The request routing rule type.', arg_type=get_enum_type(["Basic", "PathBasedRouting"]))
-        public_ip_help = get_folded_parameter_help_string('public IP address', allow_none=True, allow_new=True, default_none=True)
-        c.argument('public_ip_address', help=public_ip_help, completer=get_resource_name_completion_list('Microsoft.Network/publicIPAddresses'), arg_group='Network')
-        subnet_help = get_folded_parameter_help_string('subnet', other_required_option='--vnet-name', allow_new=True)
-        c.argument('subnet', help=subnet_help, completer=subnet_completion_list, arg_group='Network')
-
-    with self.argument_context('network application-gateway create', arg_group='Gateway') as c:
-        c.argument('cert_data', options_list='--cert-file', type=file_type, completer=FilesCompleter(), help='The path to the PFX certificate file.')
-        c.argument('frontend_port', help='The front end port number.')
-        c.argument('cert_password', help='The certificate password')
-        c.argument('http_settings_port', help='The HTTP settings port.')
-        c.argument('servers', ag_servers_type)
-        c.argument('key_vault_secret_id', help="Secret Id of (base-64 encoded unencrypted pfx) 'Secret' or 'Certificate' object stored in Azure KeyVault. You need enable soft delete for keyvault to use this feature.")
-        c.argument('ssl_cert_name', options_list='--ssl-certificate-name', help="The certificate name. Default will be `<application-gateway-name>SslCert`.")
-
     with self.argument_context('network application-gateway update', arg_group=None) as c:
         c.argument('sku', default=None)
         c.argument('enable_http2')
         c.argument('capacity', help='The number of instances to use with the application gateway.', type=int)
-
-    with self.argument_context('network application-gateway create') as c:
-        c.argument('connection_draining_timeout', type=int, help='The time in seconds after a backend server is removed during which on open connection remains active. Range: 0 (disabled) to 3600', arg_group='Gateway')
 
     with self.argument_context('network application-gateway ssl-policy') as c:
         c.argument('clear', action='store_true', help='Clear SSL policy.')
