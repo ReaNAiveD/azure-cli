@@ -4,6 +4,7 @@
 # --------------------------------------------------------------------------------------------
 
 import argparse
+import os
 
 from azure.cli.core.commands import ExtensionCommandSource
 
@@ -16,6 +17,38 @@ from knack.log import get_logger
 from knack.util import CLIError
 
 logger = get_logger(__name__)
+
+
+def _read_help_file(file_path):
+    """Read a help file, handling both filesystem paths and zip-embedded resources.
+
+    For regular filesystem paths, reads with open(). If that fails (e.g. file is inside
+    a zip archive), falls back to zipimport-based reading.
+    """
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            return f.read()
+    except (OSError, FileNotFoundError):
+        # The path may be inside a zip archive (e.g. cli_modules.zip/azure/.../help.yaml).
+        # Try to extract using zipfile.
+        try:
+            import zipfile
+            # Walk up the path to find the .zip boundary
+            path = file_path
+            while path:
+                parent, _ = os.path.split(path)
+                if parent == path:
+                    break
+                if zipfile.is_zipfile(parent):
+                    # Found the zip file; remaining path is the entry within
+                    inner_path = os.path.relpath(file_path, parent).replace(os.sep, '/')
+                    with zipfile.ZipFile(parent, 'r') as zf:
+                        return zf.read(inner_path).decode('utf-8')
+                path = parent
+        except Exception:  # pylint: disable=broad-except
+            pass
+        logger.debug("Could not read help file: %s", file_path)
+        return ''
 
 PRIVACY_STATEMENT = """
 Welcome to Azure CLI!
@@ -294,8 +327,7 @@ class AzCliHelp(CLIPrintMixin, CLIHelp):
 
         for file_name in file_name_set:
             if file_name not in self._name_to_content:
-                with open(file_name, 'r') as f:
-                    self._name_to_content[file_name] = f.read()
+                self._name_to_content[file_name] = _read_help_file(file_name)
 
         for ldr_cls_name, file_names in loader_file_names_dict.items():
             file_contents = {}

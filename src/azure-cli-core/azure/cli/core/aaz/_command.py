@@ -389,7 +389,8 @@ AAZ_PACKAGE_FULL_LOAD_ENV_NAME = 'AZURE_AAZ_FULL_LOAD'
 
 def load_aaz_command_table(loader, aaz_pkg_name, args):
     """ This function is used in AzCommandsLoader.load_command_table.
-    It will load commands in module's aaz package using file-path based navigation.
+    It will load commands in module's aaz package using importlib.resources-based navigation,
+    compatible with both filesystem and zipimport sources.
     """
     profile_pkg = _get_profile_pkg(aaz_pkg_name, loader.cli_ctx.cloud)
 
@@ -400,9 +401,8 @@ def load_aaz_command_table(loader, aaz_pkg_name, args):
     else:
         effective_args = list(args)
     if profile_pkg is not None:
-        base_path = os.path.dirname(profile_pkg.__file__)
-        _load_aaz_by_path(loader, base_path, profile_pkg.__name__, effective_args,
-                          command_table, command_group_table)
+        _load_aaz_by_pkg(loader, profile_pkg, effective_args,
+                         command_table, command_group_table)
 
     for group_name, command_group in command_group_table.items():
         loader.command_group_table[group_name] = command_group
@@ -461,72 +461,101 @@ def _register_from_module(loader, mod, command_table, command_group_table):
             command_table[value.AZ_NAME] = value(loader=loader)
 
 
-def _load_aaz_by_path(loader, base_path, base_module, args, command_table, command_group_table):
+def _get_pkg_children(pkg):
+    """List child entries of a package, compatible with both filesystem and zip sources.
+
+    Returns two sets: (file_stems, subdir_names).
+    - file_stems: module-like stems, e.g. {'_create', '_list', '__cmd_group'}
+    - subdir_names: sub-package directory names, e.g. {'vnet', 'subnet'}
+
+    Uses pkgutil.iter_modules() which is fast for both filesystem and zip-based
+    sources (it leverages zipimporter's cached central directory index).
+    """
+    import pkgutil
+    file_stems = set()
+    subdir_names = set()
+
+    pkg_path = getattr(pkg, '__path__', None)
+    if not pkg_path:
+        return file_stems, subdir_names
+
+    for importer, name, ispkg in pkgutil.iter_modules(pkg_path):
+        if ispkg:
+            if not name.startswith('_'):
+                subdir_names.add(name)
+        else:
+            file_stems.add(name)
+
+    return file_stems, subdir_names
+
+
+def _load_aaz_by_pkg(loader, pkg, args, command_table, command_group_table):
     """Recursively navigate the AAZ package tree guided by CLI args.
 
-    - args is None or empty  → full recursive load of all commands under this directory.
-    - args has items → try to match first arg as a command file or sub-directory,
-                       recurse with remaining args on match.
-    - args exhausted / no match → load current level's commands and sub-group headers.
+    Uses importlib.resources for package introspection instead of direct filesystem
+    access, making it compatible with both regular filesystem and zip-based deployments.
 
-    :param base_path: Filesystem path of the current package directory.
-    :param base_module: Dotted module name of the current package.
+    - args is None or empty  -> full recursive load of all commands under this package.
+    - args has items -> try to match first arg as a command module or sub-package,
+                       recurse with remaining args on match.
+    - args exhausted / no match -> load current level's commands and sub-group headers.
+
+    :param pkg: The imported package object for the current AAZ level.
     :param args: Remaining CLI args (list of str), or None for full load.
     """
-    if not os.path.isdir(base_path):
-        return
+    base_module = pkg.__name__
+    file_stems, subdir_names = _get_pkg_children(pkg)
 
     if args is not None and args and not args[0].startswith('-'):
         first_arg = args[0].lower().replace('-', '_')
 
-        # First arg matches a command file (e.g. "create" → "_create.py")
-        cmd_file = os.path.join(base_path, f"_{first_arg}.py")
-        if os.path.isfile(cmd_file):
+        # First arg matches a command module (e.g. "create" -> "_create")
+        if f"_{first_arg}" in file_stems:
             mod = _try_import_module(f"._{first_arg}", base_module)
             if mod:
                 _register_from_module(loader, mod, command_table, command_group_table)
             return
 
-        # First arg matches a sub-directory (command group)
-        sub_dir = os.path.join(base_path, first_arg)
-        if os.path.isdir(sub_dir):
+        # First arg matches a sub-package (command group)
+        if first_arg in subdir_names:
             sub_module = f"{base_module}.{first_arg}"
             mod = _try_import_module('.__cmd_group', sub_module)
             if mod:
                 _register_from_module(loader, mod, command_table, command_group_table)
-            _load_aaz_by_path(loader, sub_dir, sub_module, args[1:], command_table, command_group_table)
+            sub_pkg = _try_import_module(f'.{first_arg}', base_module)
+            if sub_pkg:
+                _load_aaz_by_pkg(loader, sub_pkg, args[1:], command_table, command_group_table)
             return
 
-    # Load __cmd_group + all command files at this level
+    # Load __cmd_group + all command modules at this level
     mod = _try_import_module('.__cmd_group', base_module)
     if mod:
         _register_from_module(loader, mod, command_table, command_group_table)
 
-    for entry in os.listdir(base_path):
-        entry_path = os.path.join(base_path, entry)
-
-        # Command files: _create.py, _list.py, etc.
-        if (entry.startswith('_') and not entry.startswith('__') and
-                entry.endswith('.py') and os.path.isfile(entry_path)):
-            mod = _try_import_module(f'.{entry[:-3]}', base_module)
+    for stem in file_stems:
+        # Command modules: _create, _list, etc.
+        if stem.startswith('_') and not stem.startswith('__'):
+            mod = _try_import_module(f'.{stem}', base_module)
             if mod:
                 _register_from_module(loader, mod, command_table, command_group_table)
 
-        # Sub-directories
-        elif not entry.startswith('_') and os.path.isdir(entry_path):
-            sub_module = f"{base_module}.{entry}"
-            if not args:
-                # Full load → recurse into every sub-directory
-                _load_aaz_by_path(loader, entry_path, sub_module, None, command_table, command_group_table)
-            else:
-                # Args exhausted / not matched → only load sub-group headers for help listing
-                mod = _try_import_module('.__cmd_group', sub_module)
-                if mod:
-                    _register_from_module(loader, mod, command_table, command_group_table)
+    for subdir in subdir_names:
+        sub_module = f"{base_module}.{subdir}"
+        if not args:
+            # Full load -> recurse into every sub-package
+            sub_pkg = _try_import_module(f'.{subdir}', base_module)
+            if sub_pkg:
+                _load_aaz_by_pkg(loader, sub_pkg, None, command_table, command_group_table)
+        else:
+            # Args exhausted / not matched -> only load sub-group headers for help listing
+            mod = _try_import_module('.__cmd_group', sub_module)
+            if mod:
+                _register_from_module(loader, mod, command_table, command_group_table)
 
 
 def _load_aaz_pkg(loader, pkg, parent_command_table, command_group_table, arg_str, fully_load):
-    """ Load aaz commands and aaz command groups under a package folder.
+    """ Load aaz commands and aaz command groups under a package.
+    Uses importlib.resources for zip-compatible package introspection.
     """
     cut = False  # if cut, its sub commands and sub pkgs will not be added
     command_table = {}  # the command available for this pkg and its sub pkgs
@@ -551,22 +580,20 @@ def _load_aaz_pkg(loader, pkg, parent_command_table, command_group_table, arg_st
                     # AAZCommand already be registered by register_command
                     command_table[value.AZ_NAME] = value(loader=loader)
 
-    # continue load sub pkgs
-    pkg_path = os.path.dirname(pkg.__file__)
-    for sub_path in os.listdir(pkg_path):
+    # continue load sub pkgs — use _get_pkg_children for zip compatibility
+    _, subdir_names = _get_pkg_children(pkg)
+    for sub_path in subdir_names:
         if not fully_load and cut and command_table:
             # when cut and command_table is not empty, stop loading more sub pkgs.
             break
-        if sub_path.startswith('_') or not os.path.isdir(os.path.join(pkg_path, sub_path)):
-            continue
         try:
             sub_pkg = importlib.import_module(f'.{sub_path}', pkg.__name__)
         except ModuleNotFoundError:
-            logger.debug('Failed to load package folder in aaz: %s.', os.path.join(pkg_path, sub_path))
+            logger.debug('Failed to load package folder in aaz: %s under %s.', sub_path, pkg.__name__)
             continue
 
         if not sub_pkg.__file__:
-            logger.debug('Ignore invalid package folder in aaz: %s.', os.path.join(pkg_path, sub_path))
+            logger.debug('Ignore invalid package folder in aaz: %s under %s.', sub_path, pkg.__name__)
             continue
 
         # recursively load sub package

@@ -186,14 +186,14 @@ def decode_access_token(access_token):
 
 
 def read_response_templates():
-    """Read from success.html and error.html to strings and pass them to MSAL. """
-    success_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'landing_pages', 'success.html')
-    with open(success_file) as f:
-        success_template = f.read()
+    """Read from success.html and error.html to strings and pass them to MSAL.
+    Uses importlib.resources for compatibility with both filesystem and zip-based deployments.
+    """
+    import importlib.resources
 
-    error_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'landing_pages', 'error.html')
-    with open(error_file) as f:
-        error_template = f.read()
+    landing = importlib.resources.files('azure.cli.core.auth').joinpath('landing_pages')
+    success_template = (landing / 'success.html').read_text(encoding='utf-8')
+    error_template = (landing / 'error.html').read_text(encoding='utf-8')
 
     return success_template, error_template
 
