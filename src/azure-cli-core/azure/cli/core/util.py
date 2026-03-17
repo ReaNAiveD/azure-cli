@@ -4,9 +4,6 @@
 # --------------------------------------------------------------------------------------------
 # pylint: disable=too-many-lines
 
-import base64
-import binascii
-import getpass
 import json
 import logging
 import os
@@ -591,6 +588,7 @@ def read_file_content(file_path, allow_binary=False):
 
     if allow_binary:
         try:
+            import base64
             with open(file_path, 'rb') as input_file:
                 logger.debug("attempting to read file %s as binary", file_path)
                 return base64.b64encode(input_file.read()).decode("utf-8")
@@ -641,6 +639,7 @@ def b64encode(s):
     :return: base64 encoded string
     :rtype: str
     """
+    import base64
     encoded = base64.b64encode(s.encode("latin-1"))
     return encoded.decode('latin-1')
 
@@ -652,6 +651,7 @@ def b64decode(s):
     :return: decoded string
     :rtype: str
     """
+    import base64
     encoded = base64.b64decode(s.encode("latin-1"))
     return encoded.decode('latin-1')
 
@@ -663,6 +663,8 @@ def b64_to_hex(s):
     :return: uppercase hex string
     :rtype: str
     """
+    import base64
+    import binascii
     decoded = base64.b64decode(s)
     hex_data = binascii.hexlify(decoded).upper()
     if isinstance(hex_data, bytes):
@@ -881,6 +883,7 @@ def reload_module(module):
 
 def get_default_admin_username():
     try:
+        import getpass
         username = getpass.getuser()
     except KeyError:
         username = None
