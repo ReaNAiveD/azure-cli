@@ -42,6 +42,7 @@ def call_once(factory_func):
     def _wrapped(*args, **kwargs):
         if not factory_func.executed:
             factory_func.cached_result = factory_func(*args, **kwargs)
+            factory_func.executed = True
 
         return factory_func.cached_result
 
