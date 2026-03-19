@@ -1348,17 +1348,19 @@ def handle_version_update():
     """
     try:
         from azure.cli.core._session import VERSIONS
-        from packaging.version import parse  # pylint: disable=import-error,no-name-in-module
         from azure.cli.core import __version__
         if not VERSIONS['versions']:
             get_cached_latest_versions()
-        elif parse(VERSIONS['versions']['core']['local']) != parse(__version__):
-            logger.debug("Azure CLI has been updated.")
-            logger.debug("Clean up versions and refresh cloud endpoints information in local files.")
-            VERSIONS['versions'] = {}
-            VERSIONS['update_time'] = ''
-            from azure.cli.core.cloud import refresh_known_clouds
-            refresh_known_clouds()
+        elif VERSIONS['versions']['core']['local'] != __version__:
+            # Lazy import packaging.version
+            from packaging.version import parse  # pylint: disable=import-error,no-name-in-module
+            if parse(VERSIONS['versions']['core']['local']) != parse(__version__):
+                logger.debug("Azure CLI has been updated.")
+                logger.debug("Clean up versions and refresh cloud endpoints information in local files.")
+                VERSIONS['versions'] = {}
+                VERSIONS['update_time'] = ''
+                from azure.cli.core.cloud import refresh_known_clouds
+                refresh_known_clouds()
     except Exception as ex:  # pylint: disable=broad-except
         logger.warning(ex)
 

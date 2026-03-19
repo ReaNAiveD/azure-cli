@@ -9,7 +9,6 @@
 from collections import Counter, OrderedDict
 
 from knack.log import get_logger
-from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id, resource_id
 
 from azure.cli.core.aaz import AAZClientConfiguration, has_value, register_client, AAZFileArgTextFormat
 from azure.cli.core.aaz._client import AAZMgmtClient
@@ -88,6 +87,7 @@ def _is_v2_sku(sku):
 
 
 def _add_aux_subscription(aux_subscriptions, added_resource_id):
+    from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
     if added_resource_id and is_valid_resource_id(added_resource_id):
         res_parts = parse_resource_id(added_resource_id)
         aux_sub = res_parts['subscription']
@@ -118,6 +118,7 @@ def create_application_gateway(cmd, application_gateway_name, resource_group_nam
                                ssl_profile=None,
                                ssl_profile_id=None,
                                ssl_cert_name=None):
+    from azure.mgmt.core.tools import is_valid_resource_id, resource_id
     from azure.cli.core.util import random_string
     from azure.cli.core.commands.arm import ArmTemplateBuilder
     from azure.cli.command_modules.network._template_builder import (
@@ -242,6 +243,7 @@ def remove_ag_identity(cmd, resource_group_name, application_gateway_name, no_wa
 def show_ag_backend_health(cmd, resource_group_name, application_gateway_name, expand=None,
                            protocol=None, host=None, path=None, timeout=None, host_name_from_http_settings=None,
                            match_body=None, match_status_codes=None, address_pool=None, http_settings=None):
+    from azure.mgmt.core.tools import is_valid_resource_id, resource_id
     from azure.cli.core.commands import LongRunningOperation
     on_demand_arguments = {protocol, host, path, timeout, host_name_from_http_settings, match_body, match_status_codes,
                            address_pool, http_settings}
@@ -759,6 +761,7 @@ def remove_waf_exclusion_rule_set(cmd, resource_group_name, policy_name,
 
 # region DdosProtectionPlans
 def create_ddos_plan(cmd, resource_group_name, ddos_plan_name, location=None, tags=None, vnets=None):
+    from azure.mgmt.core.tools import parse_resource_id
     from azure.cli.core.commands import LongRunningOperation
     from azure.cli.command_modules.network.aaz.latest.network.ddos_protection._create import Create
     from azure.cli.command_modules.network.operations.latest.network.vnet._update import VNetUpdate
@@ -798,6 +801,7 @@ def create_ddos_plan(cmd, resource_group_name, ddos_plan_name, location=None, ta
 
 
 def update_ddos_plan(cmd, resource_group_name, ddos_plan_name, tags=None, vnets=None):
+    from azure.mgmt.core.tools import parse_resource_id
     from azure.cli.command_modules.network.aaz.latest.network.ddos_protection._update import Update
     Update_Ddos_Protection = Update(cli_ctx=cmd.cli_ctx)
     args = {
@@ -880,6 +884,7 @@ def add_dns_delegation(cmd, child_zone, parent_zone, child_rg, child_zone_name):
      :param child_zone_name: name of the child zone
     """
     import sys
+    from azure.mgmt.core.tools import parse_resource_id, is_valid_resource_id
     from azure.core.exceptions import HttpResponseError
     parent_rg = child_rg
     parent_subscription_id = None
@@ -1816,6 +1821,7 @@ def create_load_balancer(cmd, load_balancer_name, resource_group_name, location=
                          public_ip_address_type=None, subnet_type=None, validate=False,
                          no_wait=False, sku=None, frontend_ip_zone=None, public_ip_zone=None,
                          private_ip_address_version=None, edge_zone=None):
+    from azure.mgmt.core.tools import is_valid_resource_id, resource_id
     from azure.cli.core.util import random_string
     from azure.cli.core.commands.arm import ArmTemplateBuilder
     from azure.cli.command_modules.network._template_builder import (
@@ -1934,6 +1940,7 @@ def lb_get_operation(lb):
 
 
 def _process_vnet_name_and_id(vnet, cmd, resource_group_name):
+    from azure.mgmt.core.tools import is_valid_resource_id, resource_id
     if vnet and not is_valid_resource_id(vnet):
         vnet = resource_id(
             subscription=get_subscription_id(cmd.cli_ctx),
@@ -1945,6 +1952,7 @@ def _process_vnet_name_and_id(vnet, cmd, resource_group_name):
 
 
 def _process_subnet_name_and_id(subnet, vnet, cmd, resource_group_name):
+    from azure.mgmt.core.tools import is_valid_resource_id
     if subnet and not is_valid_resource_id(subnet):
         vnet = _process_vnet_name_and_id(vnet, cmd, resource_group_name)
         if vnet is None:
@@ -1961,6 +1969,7 @@ def create_cross_region_load_balancer(cmd, load_balancer_name, resource_group_na
                                       public_ip_address=None, public_ip_address_allocation=None,
                                       public_ip_dns_name=None, public_ip_address_type=None, validate=False,
                                       no_wait=False, frontend_ip_zone=None, public_ip_zone=None):
+    from azure.mgmt.core.tools import is_valid_resource_id, resource_id
     from azure.cli.core.util import random_string
     from azure.cli.core.commands.arm import ArmTemplateBuilder
     from azure.cli.command_modules.network._template_builder import (
@@ -2125,6 +2134,7 @@ def _create_network_watchers(cmd, resource_group_name, locations, tags):
 
 
 def _update_network_watchers(cmd, watchers, tags):
+    from azure.mgmt.core.tools import parse_resource_id
     from .aaz.latest.network.watcher._update import Update
     for watcher in watchers:
         id_parts = parse_resource_id(watcher['id'])
@@ -2140,6 +2150,7 @@ def _update_network_watchers(cmd, watchers, tags):
 
 
 def _delete_network_watchers(cmd, watchers):
+    from azure.mgmt.core.tools import parse_resource_id
     from .aaz.latest.network.watcher._delete import Delete
     for watcher in watchers:
         from azure.cli.core.commands import LongRunningOperation
@@ -2394,6 +2405,7 @@ def create_public_ip(cmd, resource_group_name, public_ip_address_name, location=
     }
 
     if public_ip_prefix:
+        from azure.mgmt.core.tools import parse_resource_id
         metadata = parse_resource_id(public_ip_prefix)
         resource_group_name = metadata["resource_group"]
         public_ip_prefix_name = metadata["resource_name"]

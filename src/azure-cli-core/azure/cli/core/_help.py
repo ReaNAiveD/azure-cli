@@ -6,8 +6,6 @@
 import argparse
 import os
 
-from azure.cli.core.commands import ExtensionCommandSource
-
 from knack.help import (HelpFile as KnackHelpFile, CommandHelpFile as KnackCommandHelpFile,
                         GroupHelpFile as KnackGroupHelpFile, ArgumentGroupRegistry as KnackArgumentGroupRegistry,
                         HelpExample as KnackHelpExample, HelpParameter as KnackHelpParameter,
@@ -215,6 +213,7 @@ class CLIPrintMixin(CLIHelp):
     def _print_extensions_msg(help_file):
         if help_file.type != 'command':
             return
+        from azure.cli.core.commands import ExtensionCommandSource
         if isinstance(help_file.command_source, ExtensionCommandSource):
             logger.warning(help_file.command_source.get_command_warn_msg())
 

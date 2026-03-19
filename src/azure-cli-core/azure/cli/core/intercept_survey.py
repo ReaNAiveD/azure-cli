@@ -8,8 +8,6 @@ import sys
 import json
 from datetime import datetime, timedelta
 from azure.cli.core._config import GLOBAL_CONFIG_DIR
-from azure.cli.core._profile import Profile
-from azure.cli.core.style import print_styled_text
 from knack.log import get_logger
 
 logger = get_logger(__name__)
@@ -54,6 +52,7 @@ def should_prompt(cli):
         # We should let cx try CLI for some days(EXPERIENCE_PERIOD_IN_DAYS) and then prompt the survey message
         # We don't want to get the survey feedback on the same day, so we evenly distribute cx over 128 days
         # using their installationId
+        from azure.cli.core._profile import Profile
         installation_id = Profile(cli_ctx=cli).get_installation_id()
         prompt_period = EXPERIENCE_PERIOD_IN_DAYS + (uuid.UUID(installation_id).int & 127)
         next_prompt_time = datetime.utcnow() + timedelta(days=prompt_period)
@@ -79,6 +78,7 @@ def prompt_survey_message(cli):
         return
 
     # prompt message
+    from azure.cli.core.style import print_styled_text
     print_styled_text((SURVEY_STYLE, NEW_LINE))
     print_styled_text([
         (SURVEY_STYLE, f"[Survey] Tell us what you think of Azure CLI. "
